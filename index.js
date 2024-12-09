@@ -71,7 +71,7 @@ async function analyzeDiaryEntry() {
             {
                 parts: [
                     {
-                        text: `Analyze the following diary entry and provide personalized advice on personal growth and healthier habits, do not use any advancement, only plain text no use of ** or bolding. Do not give a huge paragraph lecture ONLY improvement tips and tips to get their life in shape, BE A THERAPIST., get to the point GIVE ADVICE DO NTO SAY IT IS TOO SMALL TO ANALYZE, GIVE IN DEPTH ANALYSIS.(the text), the text is here: "${diaryText}"`
+                        text: `Analyze the following diary entry and provide personalized advice on personal growth and healthier habits, do not use any advancement, only plain text no use of ** or bolding. Do not give a huge paragraph lecture ONLY improvement tips and tips to get their life in shape, BE A THERAPIST., get to the point GIVE ADVICE DO NTO SAY IT IS TOO SMALL TO ANALYZE, GIVE IN DEPTH ANALYSIS.(the text), do not mention things like professional help, act as a professional counselor. Also fully address things for example healthier sleep habits, how does one accomplish this? Give a plan with the steps needed to achieve what you recommend. the text is here: "${diaryText}"`
                     }
                 ]
             }
