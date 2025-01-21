@@ -1,4 +1,4 @@
-const apiKey = 'AIzaSyBk1R49RmIoJzwAeWZUSKYlk3mD2JLhafc';
+const apiKey = 'AIzaSyBnWwQENbFc-QNgLqecPXf2wc_PxNhHpNM';
 
 document.addEventListener("DOMContentLoaded", () => {
     initializeApp();
@@ -79,7 +79,7 @@ async function analyzeDiaryEntry() {
     };
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
