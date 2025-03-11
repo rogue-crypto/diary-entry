@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mindscape | AI Journal</title>
+    <title>Mindful AI | Mental Wellness</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -153,13 +153,25 @@
             min-height: calc(100vh - 5rem);
         }
 
-        .journal-section, .insights-section, .auth-section {
+        .home-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 5rem);
+        }
+
+        .journal-section, .insights-section, .auth-section, .feelings-section, .growth-section {
             backdrop-filter: blur(12px);
             background: rgba(30, 41, 59, 0.4);
             border-radius: 24px;
             padding: 2rem;
             border: 1px solid rgba(148, 163, 184, 0.1);
             transition: transform 0.3s ease;
+            margin-bottom: 2rem;
+        }
+
+        .feelings-section {
+            text-align: center;
         }
 
         .auth-section {
@@ -172,6 +184,13 @@
             margin-bottom: 1.5rem;
             color: #60a5fa;
             font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+            font-weight: 400;
         }
 
         .journal-input {
@@ -222,7 +241,7 @@
             box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
         }
 
-        .analyze-btn {
+        .analyze-btn, .submit-btn {
             background: #60a5fa;
             color: white;
             border: none;
@@ -236,12 +255,12 @@
             width: 100%;
         }
 
-        .analyze-btn:hover {
+        .analyze-btn:hover, .submit-btn:hover {
             background: #3b82f6;
             transform: translateY(-2px);
         }
 
-        .analyze-btn:disabled {
+        .analyze-btn:disabled, .submit-btn:disabled {
             background: #475569;
             cursor: not-allowed;
             transform: none;
@@ -294,6 +313,47 @@
             margin: 0.5rem;
             color: white;
             font-size: 1rem;
+        }
+
+        .feelings-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .feeling-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 120px;
+        }
+
+        .feeling-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .feeling-btn.selected {
+            border-color: #60a5fa;
+            background: rgba(96, 165, 250, 0.2);
+        }
+
+        .feeling-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feeling-label {
+            font-size: 1rem;
+            font-weight: 500;
         }
 
         .severity-high {
@@ -357,6 +417,49 @@
             animation: spin 1s linear infinite;
         }
 
+        .welcome-message {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .welcome-title {
+            font-size: 3.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #60a5fa, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid #22c55e;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -382,6 +485,14 @@
                 width: 100%;
                 justify-content: center;
             }
+
+            .feelings-container {
+                gap: 0.5rem;
+            }
+
+            .feeling-btn {
+                width: 100px;
+            }
         }
     </style>
 </head>
@@ -391,10 +502,11 @@
     <nav class="navbar">
         <div class="logo">
             <span class="logo-icon"></span>
-            Mindscape
+            Mindful AI
         </div>
         <div class="nav-links">
-            <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+            <a href="#home" class="nav-link active" data-page="home">Home</a>
+            <a href="#dashboard" class="nav-link" data-page="dashboard">Dashboard</a>
         </div>
         <div class="auth-buttons">
             <button class="btn btn-outline" data-page="login">Login</button>
@@ -402,8 +514,88 @@
         </div>
     </nav>
 
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="home-container">
+            <div class="welcome-message">
+                <h1 class="welcome-title">Welcome to Mindful AI</h1>
+                <p class="welcome-subtitle">Your personal mental wellness companion. Track your mood, identify growth areas, and get AI-powered insights to improve your mental health.</p>
+            </div>
+
+            <div class="feelings-section">
+                <h1 class="title">How are you feeling today?</h1>
+                <p class="subtitle">Select the emotion that best describes your current state</p>
+                
+                <div class="feelings-container">
+                    <div class="feeling-btn" data-feeling="happy">
+                        <div class="feeling-icon">😊</div>
+                        <div class="feeling-label">Happy</div>
+                    </div>
+                    <div class="feeling-btn" data-feeling="sad">
+                        <div class="feeling-icon">😔</div>
+                        <div class="feeling-label">Sad</div>
+                    </div>
+                    <div class="feeling-btn" data-feeling="anxious">
+                        <div class="feeling-icon">😰</div>
+                        <div class="feeling-label">Anxious</div>
+                    </div>
+                    <div class="feeling-btn" data-feeling="angry">
+                        <div class="feeling-icon">😡</div>
+                        <div class="feeling-label">Angry</div>
+                    </div>
+                    <div class="feeling-btn" data-feeling="calm">
+                        <div class="feeling-icon">😌</div>
+                        <div class="feeling-label">Calm</div>
+                    </div>
+                    <div class="feeling-btn" data-feeling="tired">
+                        <div class="feeling-icon">😴</div>
+                        <div class="feeling-label">Tired</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="growth-section">
+                <h1 class="title">Personal Growth Areas</h1>
+                <p class="subtitle">What areas would you like to improve?</p>
+                
+                <form id="growthForm">
+                    <div class="form-group">
+                        <label for="growthArea" class="form-label">Main area for improvement</label>
+                        <select id="growthArea" class="form-input" required>
+                            <option value="" selected disabled>Select an area</option>
+                            <option value="stress">Stress Management</option>
+                            <option value="anxiety">Anxiety Reduction</option>
+                            <option value="depression">Depression Management</option>
+                            <option value="sleep">Sleep Quality</option>
+                            <option value="relationships">Relationship Skills</option>
+                            <option value="confidence">Self-Confidence</option>
+                            <option value="motivation">Motivation & Productivity</option>
+                            <option value="mindfulness">Mindfulness & Presence</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currentChallenges" class="form-label">Current challenges you're facing</label>
+                        <textarea id="currentChallenges" class="form-input" placeholder="Describe your current challenges..." rows="4" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="goalDescription" class="form-label">What does success look like to you?</label>
+                        <textarea id="goalDescription" class="form-input" placeholder="Describe your goals..." rows="4" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="growthSubmitBtn">Submit</button>
+                </form>
+                
+                <div id="growthSuccess" class="success-message">
+                    Thank you for sharing! Your personalized growth plan is being created. Check the Dashboard for insights soon.
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Dashboard Page -->
-    <div id="dashboard" class="page active">
+    <div id="dashboard" class="page">
         <div class="container">
             <div class="journal-section">
                 <h1 class="title">Your Journal</h1>
@@ -564,15 +756,20 @@
             results.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
 
             try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text })
-                });
+                // Simulate API call
+                setTimeout(() => {
+                    // Sample data that would normally come from the server
+                    const data = {
+                        severity: 'Medium',
+                        healthScore: 72,
+                        problemTags: ['Mild Anxiety', 'Work Stress', 'Sleep Issues'],
+                        recommendations: [
+                            'Practice daily mindfulness meditation',
+                            'Consider time management techniques',
+                            'Create a calming bedtime routine'
+                        ]
+                    };
 
-                const data = await response.json();
-
-                if (response.ok) {
                     results.innerHTML = `
                         <div class="insight-card">
                             <h3 class="card-title">Severity Assessment</h3>
@@ -620,9 +817,8 @@
                         ease: 'back.out'
                     });
 
-                } else {
-                    throw new Error(data.error);
-                }
+                    analyzeBtn.disabled = false;
+                }, 2000);
             } catch (error) {
                 results.innerHTML = `
                     <div class="insight-card">
@@ -630,9 +826,65 @@
                         <p>${error.message || 'Failed to analyze entry'}</p>
                     </div>
                 `;
-            } finally {
                 analyzeBtn.disabled = false;
             }
+        });
+
+        // Feeling Selection
+        const feelingBtns = document.querySelectorAll('.feeling-btn');
+        let selectedFeeling = null;
+
+        feelingBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove selected class from all buttons
+                feelingBtns.forEach(b => b.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                btn.classList.add('selected');
+                
+                // Store selected feeling
+                selectedFeeling = btn.getAttribute('data-feeling');
+                
+                // Add animation
+                gsap.to(btn, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1
+                });
+            });
+        });
+
+        // Growth Form Submission
+        const growthForm = document.getElementById('growthForm');
+        const growthSuccess = document.getElementById('growthSuccess');
+
+        growthForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const growthArea = document.getElementById('growthArea').value;
+            const challenges = document.getElementById('currentChallenges').value;
+            const goals = document.getElementById('goalDescription').value;
+            
+            // In a real app, you would send this data to your backend
+            console.log('Growth Form Data:', {
+                growthArea,
+                challenges,
+                goals,
+                feeling: selectedFeeling
+            });
+            
+            // Show success message
+            growthSuccess.classList.add('show');
+            
+            // Reset form
+            growthForm.reset();
+            
+            // Hide success message after 5 seconds
+            setTimeout(() => {
+                growthSuccess.classList.remove('show');
+            }, 5000);
         });
 
         // Form submissions (placeholder functionality)
@@ -640,8 +892,8 @@
             e.preventDefault();
             alert('Login functionality would connect to backend here');
             
-            // Navigate to dashboard after login
-            document.querySelector('[data-page="dashboard"]').click();
+            // Navigate to home after login
+            document.querySelector('[data-page="home"]').click();
         });
 
         document.getElementById('signupForm').addEventListener('submit', function(e) {
@@ -658,8 +910,8 @@
             
             alert('Sign up functionality would connect to backend here');
             
-            // Navigate to dashboard after signup
-            document.querySelector('[data-page="dashboard"]').click();
+            // Navigate to home after signup
+            document.querySelector('[data-page="home"]').click();
         });
     </script>
 </body>
