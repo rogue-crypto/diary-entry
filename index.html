@@ -3,194 +3,356 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindfulAI Journal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Mindscape | AI Journal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1d4ed8;
-            --secondary: #4f46e5;
-            --accent: #06b6d4;
-            --background: #0f172a;
-            --surface: rgba(30, 41, 59, 0.7);
-            --text: #f8fafc;
-            --text-secondary: #94a3b8;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Outfit', sans-serif;
         }
 
         body {
-            background: var(--background);
-            color: var(--text);
+            background: #0f172a;
+            color: #e2e8f0;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .app-container {
-            position: relative;
-            min-height: 100vh;
-            padding: 2rem;
-            background: radial-gradient(circle at top, rgba(37, 99, 235, 0.1), transparent 70%);
-        }
-
-        .nav-bar {
+        #background-animation {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1rem 2rem;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
-        .nav-logo {
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #60a5fa;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
         }
 
-        .nav-logo i {
-            font-size: 2rem;
-        }
-
-        .hero-section {
-            margin-top: 5rem;
-            padding: 4rem 2rem;
-            text-align: center;
+        .logo-icon {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #60a5fa;
             position: relative;
+            overflow: hidden;
         }
 
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: translateY(30px);
+        .logo-icon::after {
+            content: "";
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: #0f172a;
+            border-radius: 50%;
         }
 
-        .input-card {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            border-radius: 24px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: translateY(20px);
-            opacity: 0;
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
         }
 
-        textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(99, 102, 241, 0.2);
-            border-radius: 16px;
-            color: var(--text);
-            font-size: 1.1rem;
-            resize: vertical;
+        .nav-link {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
         }
 
-        textarea:focus {
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+
+        .nav-link.active {
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            border: 1px solid #60a5fa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: calc(100vh - 5rem);
+        }
+
+        .journal-section, .insights-section, .auth-section {
+            backdrop-filter: blur(12px);
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-section {
+            max-width: 500px;
+            margin: 3rem auto;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .journal-input {
+            width: 100%;
+            height: 400px;
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            color: #e2e8f0;
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .journal-input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.2);
+            border-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #e2e8f0;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            color: #e2e8f0;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
         }
 
         .analyze-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: #60a5fa;
             color: white;
             border: none;
             padding: 1rem 2rem;
             border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
+            font-weight: 500;
+            font-size: 1.1rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             transition: all 0.3s ease;
+            width: 100%;
         }
 
         .analyze-btn:hover {
+            background: #3b82f6;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
         }
 
         .analyze-btn:disabled {
-            background: #4b5563;
+            background: #475569;
             cursor: not-allowed;
+            transform: none;
         }
 
-        .results-grid {
+        .auth-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .auth-footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .insights-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 3rem auto;
-            opacity: 0;
-            transform: translateY(20px);
+            gap: 1.5rem;
+            margin-top: 1rem;
         }
 
-        .result-card {
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.3s ease;
+        .insight-card {
+            background: rgba(30, 41, 59, 0.95);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
         }
 
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        .card-title {
+            color: #60a5fa;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
+            display: inline-flex;
+            align-items: center;
+            padding: 0.75rem 1.25rem;
             border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            background: rgba(37, 99, 235, 0.2);
-            color: var(--accent);
+            font-weight: 500;
+            margin: 0.5rem;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .severity-high {
+            background: #ef4444;
+        }
+
+        .severity-medium {
+            background: #f59e0b;
+        }
+
+        .severity-low {
+            background: #22c55e;
+        }
+
+        .problem-badge {
+            background: #6366f1;
+            margin: 0.5rem;
+            display: inline-block;
+        }
+
+        .recommendation-badge {
+            background: #8b5cf6;
+            margin: 0.5rem 0;
+            display: block;
+        }
+
+        .health-meter {
+            width: 100%;
+            height: 12px;
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 6px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .health-meter-fill {
+            height: 100%;
+            background: #60a5fa;
+            transition: width 1s ease;
+        }
+
+        .health-score {
+            color: #e2e8f0;
+            font-size: 1.2rem;
+            font-weight: 500;
         }
 
         .loading {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 3rem;
+            height: 200px;
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(37, 99, 235, 0.1);
-            border-left-color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(96, 165, 250, 0.1);
+            border-left-color: #60a5fa;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -199,164 +361,305 @@
             to { transform: rotate(360deg); }
         }
 
-        .insight-item {
-            background: rgba(99, 102, 241, 0.1);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-top: 1rem;
-            border-left: 4px solid var(--primary);
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2.5rem;
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
             }
 
-            .input-card {
-                margin: 1rem;
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
             }
 
-            .results-grid {
-                grid-template-columns: 1fr;
-                padding: 1rem;
+            .nav-links {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <a href="#" class="nav-logo">
-            <i class="fas fa-brain"></i>
-            MindfulAI Journal
-        </a>
+    <canvas id="background-animation"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon"></span>
+            Mindscape
+        </div>
+        <div class="nav-links">
+            <a href="#dashboard" class="nav-link active" data-page="dashboard">Dashboard</a>
+        </div>
+        <div class="auth-buttons">
+            <button class="btn btn-outline" data-page="login">Login</button>
+            <button class="btn btn-primary" data-page="signup">Sign Up</button>
+        </div>
+    </nav>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard" class="page active">
+        <div class="container">
+            <div class="journal-section">
+                <h1 class="title">Your Journal</h1>
+                <textarea 
+                    class="journal-input" 
+                    placeholder="Write your thoughts here..."
+                    id="journalInput"></textarea>
+                <button id="analyzeBtn" class="analyze-btn" disabled>
+                    Generate Insights
+                </button>
+            </div>
+
+            <div class="insights-section">
+                <h1 class="title">AI Insights</h1>
+                <div id="results" class="insights-grid"></div>
+            </div>
+        </div>
     </div>
 
-    <div class="app-container">
-        <section class="hero-section">
-            <h1 class="hero-title">Transform Your Thoughts Into Insights</h1>
-        </section>
-
-        <div class="input-card">
-            <form id="journalForm">
-                <textarea 
-                    id="journalInput" 
-                    placeholder="Share your thoughts, feelings, and experiences..."
-                    required></textarea>
-                <button type="submit" id="analyzeBtn" class="analyze-btn" disabled>
-                    <i class="fas fa-sparkles"></i> Generate Insights
-                </button>
+    <!-- Login Page -->
+    <div id="login" class="page">
+        <div class="auth-section">
+            <h1 class="title">Login</h1>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="analyze-btn">Login</button>
+                <div class="auth-footer">
+                    Don't have an account? <a href="#signup" data-page="signup">Sign up</a>
+                </div>
             </form>
         </div>
+    </div>
 
-        <div id="results" class="results-container"></div>
+    <!-- Sign Up Page -->
+    <div id="signup" class="page">
+        <div class="auth-section">
+            <h1 class="title">Create Account</h1>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName" class="form-label">Name</label>
+                    <input type="text" id="signupName" class="form-input" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail" class="form-label">Email</label>
+                    <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword" class="form-label">Password</label>
+                    <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" class="form-input" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="analyze-btn">Sign Up</button>
+                <div class="auth-footer">
+                    Already have an account? <a href="#login" data-page="login">Login</a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize animations
-            gsap.to('.hero-title', {
-                opacity: 1,
-                y: 0,
-                duration: 1.2,
-                ease: 'power4.out'
-            });
+        // Background Animation Setup
+        const canvas = document.getElementById('background-animation');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-            gsap.to('.input-card', {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                delay: 0.3,
-                ease: 'power3.out'
-            });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
 
-            const form = document.getElementById('journalForm');
-            const input = document.getElementById('journalInput');
-            const analyzeBtn = document.getElementById('analyzeBtn');
-            const results = document.getElementById('results');
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
 
-            input.addEventListener('input', () => {
-                analyzeBtn.disabled = !input.value.trim();
-            });
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
 
-            form.addEventListener('submit', async (e) => {
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x60a5fa,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.001;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Navigation Functionality
+        const navLinks = document.querySelectorAll('[data-page]');
+        const pages = document.querySelectorAll('.page');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const text = input.value.trim();
+                const targetPage = link.getAttribute('data-page');
                 
-                analyzeBtn.disabled = true;
-                results.innerHTML = `
-                    <div class="loading">
-                        <div class="loading-spinner"></div>
-                    </div>
-                `;
-
-                try {
-                    const response = await fetch('/api/analyze', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ text })
-                    });
-
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        results.innerHTML = `
-                            <div class="results-grid">
-                                <div class="result-card">
-                                    <span class="badge">Mental State: ${data.mentalState}</span>
-                                    <h3>Emotional Analysis</h3>
-                                    <div class="insight-item">
-                                        ${data.emotionalAnalysis}
-                                    </div>
-                                </div>
-                                
-                                <div class="result-card">
-                                    <span class="badge">Healthy Thinking: ${data.healthyThinkingScore}%</span>
-                                    <h3>Thought Patterns</h3>
-                                    <div class="insight-item">
-                                        ${data.thoughtPatterns}
-                                    </div>
-                                </div>
-                                
-                                <div class="result-card">
-                                    <span class="badge">Areas of Attention</span>
-                                    <h3>Therapist Insights</h3>
-                                    <div class="insight-item">
-                                        ${data.therapistInsights}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        gsap.from('.results-grid', {
-                            opacity: 0,
-                            y: 20,
-                            duration: 0.8,
-                            ease: 'power3.out'
-                        });
-
-                        gsap.from('.result-card', {
-                            opacity: 0,
-                            y: 20,
-                            duration: 0.8,
-                            stagger: 0.2,
-                            ease: 'power3.out'
-                        });
-                    } else {
-                        throw new Error(data.error);
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                    if (navLink.getAttribute('data-page') === targetPage) {
+                        navLink.classList.add('active');
                     }
-                } catch (error) {
+                });
+                
+                // Show target page, hide others
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    if (page.id === targetPage) {
+                        page.classList.add('active');
+                    }
+                });
+            });
+        });
+
+        // Journal Functionality
+        const journalInput = document.getElementById('journalInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const results = document.getElementById('results');
+
+        journalInput.addEventListener('input', () => {
+            analyzeBtn.disabled = !journalInput.value.trim();
+        });
+
+        analyzeBtn.addEventListener('click', async () => {
+            const text = journalInput.value.trim();
+            if (!text) return;
+
+            analyzeBtn.disabled = true;
+            results.innerHTML = '<div class="loading"><div class="loading-spinner"></div></div>';
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
                     results.innerHTML = `
-                        <div class="result-card error">
-                            <h3><i class="fas fa-exclamation-circle"></i> Error</h3>
-                            <p>${error.message || 'Failed to analyze entry'}</p>
+                        <div class="insight-card">
+                            <h3 class="card-title">Severity Assessment</h3>
+                            <div class="badge severity-${data.severity.toLowerCase()}">${data.severity} Severity</div>
+                            
+                            <h3 class="card-title">Mental Health Score</h3>
+                            <div class="health-meter">
+                                <div class="health-meter-fill" style="width: ${data.healthScore}%"></div>
+                            </div>
+                            <div class="health-score">${data.healthScore}%</div>
+                        </div>
+
+                        <div class="insight-card">
+                            <h3 class="card-title">Identified Issues</h3>
+                            <div>
+                                ${data.problemTags.map(tag => `
+                                    <div class="badge problem-badge">${tag}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="insight-card">
+                            <h3 class="card-title">Recommendations</h3>
+                            <div>
+                                ${data.recommendations.map(rec => `
+                                    <div class="badge recommendation-badge">${rec}</div>
+                                `).join('')}
+                            </div>
                         </div>
                     `;
-                } finally {
-                    analyzeBtn.disabled = false;
+
+                    gsap.from('.insight-card', {
+                        opacity: 0,
+                        y: 20,
+                        duration: 0.6,
+                        stagger: 0.2,
+                        ease: 'power3.out'
+                    });
+
+                    gsap.from('.badge', {
+                        scale: 0,
+                        opacity: 0,
+                        duration: 0.4,
+                        stagger: 0.1,
+                        ease: 'back.out'
+                    });
+
+                } else {
+                    throw new Error(data.error);
                 }
-            });
+            } catch (error) {
+                results.innerHTML = `
+                    <div class="insight-card">
+                        <h3 class="card-title">Error</h3>
+                        <p>${error.message || 'Failed to analyze entry'}</p>
+                    </div>
+                `;
+            } finally {
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        // Form submissions (placeholder functionality)
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Login functionality would connect to backend here');
+            
+            // Navigate to dashboard after login
+            document.querySelector('[data-page="dashboard"]').click();
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            alert('Sign up functionality would connect to backend here');
+            
+            // Navigate to dashboard after signup
+            document.querySelector('[data-page="dashboard"]').click();
         });
     </script>
 </body>
