@@ -506,7 +506,8 @@
         </div>
         <div class="nav-links">
             <a href="#home" class="nav-link active" data-page="home">Home</a>
-            <a href="#dashboard" class="nav-link" data-page="dashboard">Dashboard</a>
+            <a href="#new-page" class="nav-link" data-page="new-page">New Entry</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
         </div>
         <div class="auth-buttons">
             <button class="btn btn-outline" data-page="login">Login</button>
@@ -553,7 +554,30 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <!-- New Entry (formerly Dashboard) -->
+    <div id="new-page" class="page">
+        <div class="container">
+            <div class="journal-section">
+                <h1 class="title">Your Journal</h1>
+                <textarea 
+                    class="journal-input" 
+                    placeholder="Write your thoughts here..."
+                    id="journalInput"></textarea>
+                <button id="analyzeBtn" class="analyze-btn" disabled>
+                    Generate Insights
+                </button>
+            </div>
+
+            <div class="insights-section">
+                <h1 class="title">AI Insights</h1>
+                <div id="results" class="insights-grid"></div>
+            </div>
+        </div>
+
+        <div class="home-container">
             <div class="growth-section">
                 <h1 class="title">Personal Growth Areas</h1>
                 <p class="subtitle">What areas would you like to improve?</p>
@@ -590,27 +614,6 @@
                 <div id="growthSuccess" class="success-message">
                     Thank you for sharing! Your personalized growth plan is being created. Check the Dashboard for insights soon.
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dashboard Page -->
-    <div id="dashboard" class="page">
-        <div class="container">
-            <div class="journal-section">
-                <h1 class="title">Your Journal</h1>
-                <textarea 
-                    class="journal-input" 
-                    placeholder="Write your thoughts here..."
-                    id="journalInput"></textarea>
-                <button id="analyzeBtn" class="analyze-btn" disabled>
-                    Generate Insights
-                </button>
-            </div>
-
-            <div class="insights-section">
-                <h1 class="title">AI Insights</h1>
-                <div id="results" class="insights-grid"></div>
             </div>
         </div>
     </div>
