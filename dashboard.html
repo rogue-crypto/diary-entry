@@ -1,673 +1,1847 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MindfulAI Journal Dashboard</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-    
-    :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #1e293b;
-      --bg-card-hover: #334155;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-purple: #8b5cf6;
-      --accent-orange: #f59e0b;
-      --accent-red: #ef4444;
-      --glassmorphism: rgba(255, 255, 255, 0.05);
-    }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-    
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      overflow-x: hidden;
-    }
-    
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-    
-    header {
-      display: flex;
-      align-items: center;
-      padding: 1.5rem 0;
-      margin-bottom: 2rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    
-    .logo-icon {
-      width: 40px;
-      height: 40px;
-      background-color: var(--accent-blue);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-    }
-    
-    .logo-text {
-      font-weight: 600;
-      font-size: 1.5rem;
-      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 2s infinite;
-    }
-    
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-    
-    .dashboard-title {
-      margin-bottom: 1rem;
-    }
-    
-    .dashboard-title h1 {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    
-    .dashboard-title p {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-    
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
-    }
-    
-    .card {
-      background-color: var(--bg-card);
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-      border-color: rgba(59, 130, 246, 0.3);
-    }
-    
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-    
-    .card:hover::before {
-      opacity: 1;
-    }
-    
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    
-    .card-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .card-icon {
-      width: 30px;
-      height: 30px;
-      background-color: var(--glassmorphism);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--accent-blue);
-    }
-    
-    .card-content {
-      height: 100%;
-    }
-    
-    .mood-chart {
-      grid-column: span 7;
-      height: 300px;
-    }
-    
-    .stats-card {
-      grid-column: span 5;
-      height: 300px;
-    }
-    
-    .today-mood {
-      grid-column: span 4;
-      height: 300px;
-    }
-    
-    .emotion-breakdown {
-      grid-column: span 4;
-      height: 300px;
-    }
-    
-    .insights-card {
-      grid-column: span 4;
-      height: 300px;
-    }
-    
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-      height: calc(100% - 3rem);
-    }
-    
-    .stat-item {
-      background-color: rgba(255, 255, 255, 0.03);
-      padding: 1rem;
-      border-radius: 12px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-    
-    .stat-item:hover {
-      background-color: rgba(255, 255, 255, 0.07);
-    }
-    
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      background-color: var(--glassmorphism);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    
-    .entry-icon {
-      color: var(--accent-blue);
-    }
-    
-    .streak-icon {
-      color: var(--accent-green);
-    }
-    
-    .avg-icon {
-      color: var(--accent-orange);
-    }
-    
-    .best-icon {
-      color: var(--accent-purple);
-    }
-    
-    .stat-label {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-bottom: 0.25rem;
-    }
-    
-    .stat-value {
-      font-size: 1.5rem;
-      font-weight: 600;
-    }
-    
-    .mood-meter {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: calc(100% - 3rem);
-    }
-    
-    .mood-circle {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: conic-gradient(var(--accent-blue) 0%, var(--accent-blue) 75%, #334155 75%, #334155 100%);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 1rem;
-      transform: rotate(-90deg);
-    }
-    
-    .mood-circle::before {
-      content: '';
-      position: absolute;
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      background-color: var(--bg-card);
-    }
-    
-    .mood-value {
-      transform: rotate(90deg);
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      position: relative;
-      z-index: 2;
-    }
-    
-    .mood-details {
-      width: 100%;
-    }
-    
-    .mood-detail-item {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .mood-detail-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-    
-    .mood-detail-label {
-      color: var(--text-secondary);
-    }
-    
-    .mood-detail-value {
-      font-weight: 500;
-    }
-    
-    .emotions-container {
-      display: flex;
-      flex-direction: column;
-      height: calc(100% - 3rem);
-    }
-    
-    .emotion-list {
-      margin-top: 1rem;
-    }
-    
-    .emotion-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-    
-    .emotion-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 3px;
-      margin-right: 0.75rem;
-    }
-    
-    .emotion-name {
-      flex: 1;
-    }
-    
-    .emotion-percent {
-      font-weight: 500;
-    }
-    
-    .blue {
-      background-color: var(--accent-blue);
-    }
-    
-    .green {
-      background-color: var(--accent-green);
-    }
-    
-    .orange {
-      background-color: var(--accent-orange);
-    }
-    
-    .red {
-      background-color: var(--accent-red);
-    }
-    
-    .purple {
-      background-color: var(--accent-purple);
-    }
-    
-    .insights-list {
-      height: calc(100% - 3rem);
-      overflow-y: auto;
-    }
-    
-    .insight-item {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-      padding: 0.75rem;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.03);
-      transition: all 0.2s ease;
-    }
-    
-    .insight-item:hover {
-      background-color: rgba(255, 255, 255, 0.07);
-    }
-    
-    .insight-icon {
-      color: var(--accent-blue);
-      margin-right: 0.75rem;
-      margin-top: 0.25rem;
-    }
-    
-    .insight-text {
-      font-size: 0.9rem;
-      line-height: 1.5;
-      flex: 1;
-    }
-    
-    .chart-container {
-      width: 100%;
-      height: calc(100% - 3rem);
-      position: relative;
-    }
-    
-    /* Animations */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    .animate-fadeInUp {
-      animation: fadeInUp 0.6s ease forwards;
-    }
-    
-    .delay-1 {
-      animation-delay: 0.1s;
-      opacity: 0;
-    }
-    
-    .delay-2 {
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-    
-    .delay-3 {
-      animation-delay: 0.3s;
-      opacity: 0;
-    }
-    
-    .delay-4 {
-      animation-delay: 0.4s;
-      opacity: 0;
-    }
-    
-    .delay-5 {
-      animation-delay: 0.5s;
-      opacity: 0;
-    }
-  </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>MindfulAI Journal Dashboard</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+ 
+ :root {
+ --bg-primary: #0f172a;
+ --bg-secondary: #1e293b;
+ --bg-card: #1e293b;
+ --bg-card-hover: #334155;
+ --text-primary: #f8fafc;
+ --text-secondary: #94a3b8;
+ --accent-blue: #3b82f6;
+ --accent-green: #10b981;
+ --accent-purple: #8b5cf6;
+ --accent-orange: #f59e0b;
+ --accent-red: #ef4444;
+ --glassmorphism: rgba(255, 255, 255, 0.05);
+ }
+ 
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: 'Poppins', sans-serif;
+ }
+ 
+ body {
+ background-color: var(--bg-primary);
+ color: var(--text-primary);
+ overflow-x: hidden;
+ }
+ 
+ .container {
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: 2rem;
+ }
+ 
+ header {
+ display: flex;
+ align-items: center;
+ padding: 1.5rem 0;
+ margin-bottom: 2rem;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+ 
+ .logo {
+ display: flex;
+ align-items: center;
+ gap: 1rem;
+ }
+ 
+ .logo-icon {
+ width: 40px;
+ height: 40px;
+ background-color: var(--accent-blue);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 1.5rem;
+ box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+ }
+ 
+ .logo-text {
+ font-weight: 600;
+ font-size: 1.5rem;
+ background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ animation: shimmer 2s infinite;
+ }
+ 
+ @keyframes shimmer {
+ 0% { background-position: -200% center; }
+ 100% { background-position: 200% center; }
+ }
+ 
+ .dashboard-title {
+ margin-bottom: 1rem;
+ }
+ 
+ .dashboard-title h1 {
+ font-size: 1.8rem;
+ font-weight: 600;
+ margin-bottom: 0.5rem;
+ }
+ 
+ .dashboard-title p {
+ color: var(--text-secondary);
+ font-size: 1rem;
+ }
+ 
+ .dashboard-grid {
+ display: grid;
+ grid-template-columns: repeat(12, 1fr);
+ gap: 1.5rem;
+ }
+ 
+ .card {
+ background-color: var(--bg-card);
+ border-radius: 16px;
+ padding: 1.5rem;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+ transition: all 0.3s ease;
+ border: 1px solid rgba(255, 255, 255, 0.05);
+ position: relative;
+ overflow: hidden;
+ }
+ 
+ .card:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+ border-color: rgba(59, 130, 246, 0.3);
+ }
+ 
+ .card::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+ opacity: 0;
+ transition: all 0.3s ease;
+ }
+ 
+ .card:hover::before {
+ opacity: 1;
+ }
+ 
+ .card-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 1.5rem;
+ }
+ 
+ .card-title {
+ font-size: 1.1rem;
+ font-weight: 600;
+ color: var(--text-primary);
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ }
+ 
+ .card-icon {
+ width: 30px;
+ height: 30px;
+ background-color: var(--glassmorphism);
+ border-radius: 8px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: var(--accent-blue);
+ }
+ 
+ .card-content {
+ height: 100%;
+ }
+ 
+ .mood-chart {
+ grid-column: span 7;
+ height: 300px;
+ }
+ 
+ .stats-card {
+ grid-column: span 5;
+ height: 300px;
+ }
+ 
+ .today-mood {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .emotion-breakdown {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .insights-card {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .stat-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 1.5rem;
+ height: calc(100% - 3rem);
+ }
+ 
+ .stat-item {
+ background-color: rgba(255, 255, 255, 0.03);
+ padding: 1rem;
+ border-radius: 12px;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ transition: all 0.3s ease;
+ }
+ 
+ .stat-item:hover {
+ background-color: rgba(255, 255, 255, 0.07);
+ }
+ 
+ .stat-icon {
+ width: 50px;
+ height: 50px;
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 1rem;
+ font-size: 1.5rem;
+ background-color: var(--glassmorphism);
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .entry-icon {
+ color: var(--accent-blue);
+ }
+ 
+ .streak-icon {
+ color: var(--accent-green);
+ }
+ 
+ .avg-icon {
+ color: var(--accent-orange);
+ }
+ 
+ .best-icon {
+ color: var(--accent-purple);
+ }
+ 
+ .stat-label {
+ color: var(--text-secondary);
+ font-size: 0.9rem;
+ margin-bottom: 0.25rem;
+ }
+ 
+ .stat-value {
+ font-size: 1.5rem;
+ font-weight: 600;
+ }
+ 
+ .mood-meter {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ height: calc(100% - 3rem);
+ }
+ 
+ .mood-circle {
+ width: 140px;
+ height: 140px;
+ border-radius: 50%;
+ background: conic-gradient(var(--accent-blue) 0%, var(--accent-blue) 75%, #334155 75%, #334155 100%);
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 1rem;
+ transform: rotate(-90deg);
+ }
+ 
+ .mood-circle::before {
+ content: '';
+ position: absolute;
+ width: 110px;
+ height: 110px;
+ border-radius: 50%;
+ background-color: var(--bg-card);
+ }
+ 
+ .mood-value {
+ transform: rotate(90deg);
+ font-size: 2rem;
+ font-weight: 600;
+ color: var(--text-primary);
+ position: relative;
+ z-index: 2;
+ }
+ 
+ .mood-details {
+ width: 100%;
+ }
+ 
+ .mood-detail-item {
+ display: flex;
+ justify-content: space-between;
+ margin-bottom: 0.75rem;
+ padding-bottom: 0.75rem;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+ }
+ 
+ .mood-detail-item:last-child {
+ border-bottom: none;
+ margin-bottom: 0;
+ padding-bottom: 0;
+ }
+ 
+ .mood-detail-label {
+ color: var(--text-secondary);
+ }
+ 
+ .mood-detail-value {
+ font-weight: 500;
+ }
+ 
+ .emotions-container {
+ display: flex;
+ flex-direction: column;
+ height: calc(100% - 3rem);
+ }
+ 
+ .emotion-list {
+ margin-top: 1rem;
+ }
+ 
+ .emotion-item {
+ display: flex;
+ align-items: center;
+ margin-bottom: 0.75rem;
+ }
+ 
+ .emotion-color {
+ width: 12px;
+ height: 12px;
+ border-radius: 3px;
+ margin-right: 0.75rem;
+ }
+ 
+ .emotion-name {
+ flex: 1;
+ }
+ 
+ .emotion-percent {
+ font-weight: 500;
+ }
+ 
+ .blue {
+ background-color: var(--accent-blue);
+ }
+ 
+ .green {
+ background-color: var(--accent-green);
+ }
+ 
+ .orange {
+ background-color: var(--accent-orange);
+ }
+ 
+ .red {
+ background-color: var(--accent-red);
+ }
+ 
+ .purple {
+ background-color: var(--accent-purple);
+ }
+ 
+ .insights-list {
+ height: calc(100% - 3rem);
+ overflow-y: auto;
+ }
+ 
+ .insight-item {
+ display: flex;
+ align-items: flex-start;
+ margin-bottom: 1rem;
+ padding: 0.75rem;
+ border-radius: 8px;
+ background-color: rgba(255, 255, 255, 0.03);
+ transition: all 0.2s ease;
+ }
+ 
+ .insight-item:hover {
+ background-color: rgba(255, 255, 255, 0.07);
+ }
+ 
+ .insight-icon {
+ color: var(--accent-blue);
+ margin-right: 0.75rem;
+ margin-top: 0.25rem;
+ }
+ 
+ .insight-text {
+ font-size: 0.9rem;
+ line-height: 1.5;
+ flex: 1;
+ }
+ 
+ .chart-container {
+ width: 100%;
+ height: calc(100% - 3rem);
+ position: relative;
+ }
+ 
+ /* Animations */
+ @keyframes fadeInUp {
+ from {
+ opacity: 0;
+ transform: translateY(20px);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0);
+ }
+ }
+ 
+ .animate-fadeInUp {
+ animation: fadeInUp 0.6s ease forwards;
+ }
+ 
+ .delay-1 {
+ animation-delay: 0.1s;
+ opacity: 0;
+ }
+ 
+ .delay-2 {
+ animation-delay: 0.2s;
+ opacity: 0;
+ }
+ 
+ .delay-3 {
+ animation-delay: 0.3s;
+ opacity: 0;
+ }
+ 
+ .delay-4 {
+ animation-delay: 0.4s;
+ opacity: 0;
+ }
+ 
+ .delay-5 {
+ animation-delay: 0.5s;
+ opacity: 0;
+ }
+ </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">
-          <i class="fas fa-brain"></i>
-        </div>
-        <h1 class="logo-text">MindfulAI Journal</h1>
-      </div>
-    </header>
-    
-    <div class="dashboard-title">
-      <h1>Your Mindfulness Dashboard</h1>
-      <p>February 28, 2025 • <i class="fas fa-moon"></i> Evening</p>
-    </div>
-    
-    <div class="dashboard-grid">
-      <!-- Mood Chart -->
-      <div class="card mood-chart animate-fadeInUp delay-1">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">
-              <i class="fas fa-chart-line"></i>
-            </div>
-            Mood Timeline
-          </div>
-          <div class="card-options">
-            <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="chart-container">
-            <canvas id="moodChart"></canvas>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Stats Card -->
-      <div class="card stats-card animate-fadeInUp delay-2">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">
-              <i class="fas fa-chart-pie"></i>
-            </div>
-            Journal Stats
-          </div>
-          <div class="card-options">
-            <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="stat-grid">
-            <div class="stat-item">
-              <div class="stat-icon entry-icon">
-                <i class="fas fa-pen-to-square"></i>
-              </div>
-              <div class="stat-label">Entries This Month</div>
-              <div class="stat-value" id="entryCount">28</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-icon streak-icon">
-                <i class="fas fa-fire"></i>
-              </div>
-              <div class="stat-label">Current Streak</div>
-              <div class="stat-value" id="streakCount">12 days</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-icon avg-icon">
-                <i class="fas fa-chart-simple"></i>
-              </div>
-              <div class="stat-label">Average Mood</div>
-              <div class="stat-value" id="avgMood">6.8</div>
-            </div>
-            <div class="stat-item">
-              <div class="stat-icon best-icon">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="stat-label">Best Day</div>
-              <div class="stat-value" id="bestDay">Tuesday</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Today's Mood -->
-      <div class="card today-mood animate-fadeInUp delay-3">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">
-              <i class="fas fa-face-smile"></i>
-            </div>
-            Today's Mood
-          </div>
-          <div class="card-options">
-            <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="mood-meter">
-            <div class="mood-circle">
-              <div class="mood-value">7.5</div>
-            </div>
-            <div class="mood-details">
-              <div class="mood-detail-item">
-                <div class="mood-detail-label">Primary Emotion</div>
-                <div class="mood-detail-value" style="color: var(--accent-blue)">Content</div>
-              </div>
-              <div class="mood-detail-item">
-                <div class="mood-detail-label">Tone</div>
-                <div class="mood-detail-value" style="color: var(--accent-green)">Positive</div>
-              </div>
-              <div class="mood-detail-item">
-                <div class="mood-detail-label">Energy Level</div>
-                <div class="mood-detail-value" style="color: var(--accent-orange)">Moderate</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Emotion Breakdown -->
-      <div class="card emotion-breakdown animate-fadeInUp delay-4">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">
-              <i class="fas fa-heart-pulse"></i>
-            </div>
-            Emotion Breakdown
-          </div>
-          <div class="card-options">
-            <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="emotions-container">
-            <div class="chart-container" style="height: 150px">
-              <canvas id="emotionsChart"></canvas>
-            </div>
-            <div class="emotion-list">
-              <div class="emotion-item">
-                <div class="emotion-color blue"></div>
-                <div class="emotion-name">Content</div>
-                <div class="emotion-percent">40%</div>
-              </div>
-              <div class="emotion-item">
-                <div class="emotion-color green"></div>
-                <div class="emotion-name">Joy</div>
-                <div class="emotion-percent">25%</div>
-              </div>
-              <div class="emotion-item">
-                <div class="emotion-color orange"></div>
-                <div class="emotion-name">Calm</div>
-                <div class="emotion-percent">15%</div>
-              </div>
-              <div class="emotion-item">
-                <div class="emotion-color red"></div>
-                <div class="emotion-name">Stress</div>
-                <div class="emotion-percent">10%</div>
-              </div>
-              <div class="emotion-item">
-                <div class="emotion-color purple"></div>
-                <div class="emotion-name">Other</div>
-                <div class="emotion-percent">10%</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Insights Card -->
-      <div class="card insights-card animate-fadeInUp delay-5">
-        <div class="card-header">
-          <div class="card-title">
-            <div class="card-icon">
-              <i class="fas fa-lightbulb"></i>
-            </div>
-            Your Insights
-          </div>
-          <div class="card-options">
-            <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
-          </div>
-        </div>
-        <div class="card-content">
-          <div class="insights-list">
-            <div class="insight-item">
-              <div class="insight-icon">
-                <i class="fas fa-arrow-trend-up"></i>
-              </div>
-              <div class="insight-text">Your mood tends to improve after journaling sessions, especially in the evening.</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-icon">
-                <i class="fas fa-calendar"></i>
-              </div>
-              <div class="insight-text">Weekends show the most positive entries, with Saturday being your happiest day.</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-icon">
-                <i class="fas fa-arrow-trend-down"></i>
-              </div>
-              <div class="insight-text">Stress levels consistently decrease in the evening after reflection.</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-icon">
-                <i class="fas fa-heart"></i>
-              </div>
-              <div class="insight-text">Gratitude for friends and family appears in 68% of your positive entries.</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-icon">
-                <i class="fas fa-star"></i>
-              </div>
-              <div class="insight-text">Try morning journaling to potentially boost your daily productivity and mood.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-</script>
+ <div class="container">
+ <header>
+ <div class="logo">
+ <div class="logo-icon">
+ <i class="fas fa-brain"></i>
+ </div>
+ <h1 class="logo-text">MindfulAI Journal</h1>
+ </div>
+ </header>
+ 
+ <div class="dashboard-title">
+ <h1>Your Mindfulness Dashboard</h1>
+ <p>February 28, 2025 • <i class="fas fa-moon"></i> Evening</p>
+ </div>
+ 
+ <div class="dashboard-grid">
+ <!-- Mood Chart -->
+ <div class="card mood-chart animate-fadeInUp delay-1">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-chart-line"></i>
+ </div>
+ Mood Timeline
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="chart-container">
+ <canvas id="moodChart"></canvas>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Stats Card -->
+ <div class="card stats-card animate-fadeInUp delay-2">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-chart-pie"></i>
+ </div>
+ Journal Stats
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="stat-grid">
+ <div class="stat-item">
+ <div class="stat-icon entry-icon">
+ <i class="fas fa-pen-to-square"></i>
+ </div>
+ <div class="stat-label">Entries This Month</div>
+ <div class="stat-value" id="entryCount">28</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon streak-icon">
+ <i class="fas fa-fire"></i>
+ </div>
+ <div class="stat-label">Current Streak</div>
+ <div class="stat-value" id="streakCount">12 days</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon avg-icon">
+ <i class="fas fa-chart-simple"></i>
+ </div>
+ <div class="stat-label">Average Mood</div>
+ <div class="stat-value" id="avgMood">6.8</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon best-icon">
+ <i class="fas fa-star"></i>
+ </div>
+ <div class="stat-label">Best Day</div>
+ <div class="stat-value" id="bestDay">Tuesday</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Today's Mood -->
+ <div class="card today-mood animate-fadeInUp delay-3">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-face-smile"></i>
+ </div>
+ Today's Mood
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="mood-meter">
+ <div class="mood-circle">
+ <div class="mood-value">7.5</div>
+ </div>
+ <div class="mood-details">
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Primary Emotion</div>
+ <div class="mood-detail-value" style="color: var(--accent-blue)">Content</div>
+ </div>
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Tone</div>
+ <div class="mood-detail-value" style="color: var(--accent-green)">Positive</div>
+ </div>
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Energy Level</div>
+ <div class="mood-detail-value" style="color: var(--accent-orange)">Moderate</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Emotion Breakdown -->
+ <div class="card emotion-breakdown animate-fadeInUp delay-4">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-heart-pulse"></i>
+ </div>
+ Emotion Breakdown
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="emotions-container">
+ <div class="chart-container" style="height: 150px">
+ <canvas id="emotionsChart"></canvas>
+ </div>
+ <div class="emotion-list">
+ <div class="emotion-item">
+ <div class="emotion-color blue"></div>
+ <div class="emotion-name">Content</div>
+ <div class="emotion-percent">40%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color green"></div>
+ <div class="emotion-name">Joy</div>
+ <div class="emotion-percent">25%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color orange"></div>
+ <div class="emotion-name">Calm</div>
+ <div class="emotion-percent">15%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color red"></div>
+ <div class="emotion-name">Stress</div>
+ <div class="emotion-percent">10%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color purple"></div>
+ <div class="emotion-name">Other</div>
+ <div class="emotion-percent">10%</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Insights Card -->
+ <div class="card insights-card animate-fadeInUp delay-5">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-lightbulb"></i>
+ </div>
+ Your Insights
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="insights-list">
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-arrow-trend-up"></i>
+ </div>
+ <div class="insight-text">Your mood tends to improve after journaling sessions, especially in the evening.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-calendar"></i>
+ </div>
+ <div class="insight-text">Weekends show the most positive entries, with Saturday being your happiest day.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-arrow-trend-down"></i>
+ </div>
+ <div class="insight-text">Stress levels consistently decrease in the evening after reflection.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-heart"></i>
+ </div>
+ <div class="insight-text">Gratitude for friends and family appears in 68% of your positive entries.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-star"></i>
+ </div>
+ <div class="insight-text">Try morning journaling to potentially boost your daily productivity and mood.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <script>
+ // Counter animations
+ const countElement = document.getElementById('entryCount');
+ const startCount = 0;
+ const endCount = 28;
+ const duration = 2000;
+ 
+ let startTime;
+ function animateCount(timestamp) {
+ if (!startTime) startTime = timestamp;
+ const progress = timestamp - startTime;
+ const percentage = Math.min(progress / duration, 1);
+ 
+ const currentCount = Math.floor(percentage * (endCount - startCount) + startCount);
+ countElement.textContent = currentCount;
+ 
+ if (percentage < 1) {
+ requestAnimationFrame(animateCount);
+ }
+ }
+ 
+ requestAnimationFrame(animateCount);
+ 
+ // Initialize Mood Chart
+ const moodCtx = document.getElementById('moodChart').getContext('2d');
+ const moodChart = new Chart(moodCtx, {
+ type: 'line',
+ data: {
+ labels: ['Feb 20', 'Feb 21', 'Feb 22', 'Feb 23', 'Feb 24', 'Feb 25', 'Feb 26', 'Feb 27', 'Feb 28'],
+ datasets: [{
+ label: 'Mood Level',
+ data: [6.2, 7.1, 6.5, 8.0, 7.3, 8.5, 7.8, 8.3, 7.5],
+ fill: true,
+ backgroundColor: 'rgba(59, 130, 246, 0.1)',
+ borderColor: 'rgba(59, 130, 246, 0.8)',
+ borderWidth: 3,
+ tension: 0.4,
+ pointBackgroundColor: '#3b82f6',
+ pointBorderColor: '#fff',
+ pointRadius: 5,
+ pointHoverRadius: 8
+ }]
+ },
+ options: {
+ responsive: true,
+ maintainAspectRatio: false,
+ animation: {
+ duration: 2000,
+ easing: 'easeOutQuart'
+ },
+ scales: {
+ y: {
+ min: 0,
+ max: 10,
+ grid: {
+ color: 'rgba(255, 255, 255, 0.05)',
+ },
+ ticks: {
+ color: 'rgba(255, 255, 255, 0.6)',
+ font: {
+ family: "'Poppins', sans-serif"
+ }
+ }
+ },
+ x: {
+ grid: {
+ display: false
+ },
+ ticks: {
+ color: 'rgba(255, 255, 255, 0.6)',
+ font: {
+ family: "'Poppins', sans-serif"
+ }
+ }
+ }
+ },
+ plugins: {
+ legend: {
+ display: false
+ },
+ tooltip: {
+ backgroundColor: 'rgba(30, 41, 59, 0.9)',
+ titleFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ bodyFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ padding: 12,
+ caretSize: 6,
+ displayColors: false,
+ callbacks: {
+ label: function(context) {
+ return `Mood: ${context.raw}/10`;
+ }
+ }
+ }
+ }
+ }
+ });
+ 
+ // Initialize Emotions Chart
+ const emotionsCtx = document.getElementById('emotionsChart').getContext('2d');
+ const emotionsChart = new Chart(emotionsCtx, {
+ type: 'doughnut',
+ data: {
+ labels: ['Content', 'Joy', 'Calm', 'Stress', 'Other'],
+ datasets: [{
+ data: [40, 25, 15, 10, 10],
+ backgroundColor: [
+ '#3b82f6',
+ '#10b981',
+ '#f59e0b',
+ '#ef4444',
+ '#8b5cf6'
+ ],
+ borderWidth: 0,
+ borderRadius: 4,
+ }]
+ },
+ options: {
+ responsive: true,
+ maintainAspectRatio: false,
+ cutout: '70%',
+ animation: {
+ animateRotate: true,
+ animateScale: true,
+ duration: 2000,
+ easing: 'easeOutQuart'
+ },
+ plugins: {
+ legend: {
+ display: false
+ },
+ tooltip: {
+ backgroundColor: 'rgba(30, 41, 59, 0.9)',
+ titleFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ bodyFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ padding: 12,
+ caretSize: 6,
+ displayColors: true,
+ callbacks: {
+ label: function(context) {
+ return `${context.label}: ${context.raw}%`;
+ }
+ }
+ }
+ }
+ }
+ });
+ 
+ // Animate stats
+ setTimeout(() => {
+ anime({
+ targets: '#avgMood',
+ innerHTML: [0, 6.8],
+ round: 10,
+ easing: 'easeInOutExpo',
+ duration: 2000
+ });
+ 
+ anime({
+ targets: '#streakCount',
+ innerHTML: [0, 12],
+ round: 1,
+ easing: 'easeInOutExpo',
+ duration: 2000,
+ complete: function(anim) {
+ document.getElementById('streakCount').innerHTML = '12 days';
+ }
+ });
+ }, 500);
+ 
+ // Hover effects for cards
+ document.querySelectorAll('.card').forEach(card => {
+ card.addEventListener('mouseenter', () => {
+ anime({
+ targets: card,
+ scale: 1.02,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ card.addEventListener('mouseleave', () => {
+ anime({
+ targets: card,
+ scale: 1,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ 
+ // Hover effects for stats
+ document.querySelectorAll('.stat-item').forEach(item => {
+ item.addEventListener('mouseenter', () => {
+ const icon = item.querySelector('.stat-icon');
+ anime({
+ targets: icon,
+ scale: 1.2,
+ rotate: '5deg',
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ item.addEventListener('mouseleave', () => {
+ const icon = item.querySelector('.stat-icon');
+ anime({
+ targets: icon,
+ scale: 1,
+ rotate: '0deg',
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ 
+ // Hover effects for insights
+ document.querySelectorAll('.insight-item').forEach(item => {
+ item.addEventListener('mouseenter', () => {
+ anime({
+ targets: item,
+ backgroundColor: 'rgba(255, 255, 255, 0.08)',
+ translateX: 5,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ item.addEventListener('mouseleave', () => {
+ anime({
+ targets: item,
+ backgroundColor: 'rgba(255, 255, 255, 0.03)',
+ translateX: 0,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>MindfulAI Journal Dashboard</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+ <style>
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+ 
+ :root {
+ --bg-primary: #0f172a;
+ --bg-secondary: #1e293b;
+ --bg-card: #1e293b;
+ --bg-card-hover: #334155;
+ --text-primary: #f8fafc;
+ --text-secondary: #94a3b8;
+ --accent-blue: #3b82f6;
+ --accent-green: #10b981;
+ --accent-purple: #8b5cf6;
+ --accent-orange: #f59e0b;
+ --accent-red: #ef4444;
+ --glassmorphism: rgba(255, 255, 255, 0.05);
+ }
+ 
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: 'Poppins', sans-serif;
+ }
+ 
+ body {
+ background-color: var(--bg-primary);
+ color: var(--text-primary);
+ overflow-x: hidden;
+ }
+ 
+ .container {
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: 2rem;
+ }
+ 
+ header {
+ display: flex;
+ align-items: center;
+ padding: 1.5rem 0;
+ margin-bottom: 2rem;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+ }
+ 
+ .logo {
+ display: flex;
+ align-items: center;
+ gap: 1rem;
+ }
+ 
+ .logo-icon {
+ width: 40px;
+ height: 40px;
+ background-color: var(--accent-blue);
+ border-radius: 10px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 1.5rem;
+ box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+ }
+ 
+ .logo-text {
+ font-weight: 600;
+ font-size: 1.5rem;
+ background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+ -webkit-background-clip: text;
+ -webkit-text-fill-color: transparent;
+ animation: shimmer 2s infinite;
+ }
+ 
+ @keyframes shimmer {
+ 0% { background-position: -200% center; }
+ 100% { background-position: 200% center; }
+ }
+ 
+ .dashboard-title {
+ margin-bottom: 1rem;
+ }
+ 
+ .dashboard-title h1 {
+ font-size: 1.8rem;
+ font-weight: 600;
+ margin-bottom: 0.5rem;
+ }
+ 
+ .dashboard-title p {
+ color: var(--text-secondary);
+ font-size: 1rem;
+ }
+ 
+ .dashboard-grid {
+ display: grid;
+ grid-template-columns: repeat(12, 1fr);
+ gap: 1.5rem;
+ }
+ 
+ .card {
+ background-color: var(--bg-card);
+ border-radius: 16px;
+ padding: 1.5rem;
+ box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+ transition: all 0.3s ease;
+ border: 1px solid rgba(255, 255, 255, 0.05);
+ position: relative;
+ overflow: hidden;
+ }
+ 
+ .card:hover {
+ transform: translateY(-5px);
+ box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+ border-color: rgba(59, 130, 246, 0.3);
+ }
+ 
+ .card::before {
+ content: '';
+ position: absolute;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 4px;
+ background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+ opacity: 0;
+ transition: all 0.3s ease;
+ }
+ 
+ .card:hover::before {
+ opacity: 1;
+ }
+ 
+ .card-header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-bottom: 1.5rem;
+ }
+ 
+ .card-title {
+ font-size: 1.1rem;
+ font-weight: 600;
+ color: var(--text-primary);
+ display: flex;
+ align-items: center;
+ gap: 0.5rem;
+ }
+ 
+ .card-icon {
+ width: 30px;
+ height: 30px;
+ background-color: var(--glassmorphism);
+ border-radius: 8px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ color: var(--accent-blue);
+ }
+ 
+ .card-content {
+ height: 100%;
+ }
+ 
+ .mood-chart {
+ grid-column: span 7;
+ height: 300px;
+ }
+ 
+ .stats-card {
+ grid-column: span 5;
+ height: 300px;
+ }
+ 
+ .today-mood {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .emotion-breakdown {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .insights-card {
+ grid-column: span 4;
+ height: 300px;
+ }
+ 
+ .stat-grid {
+ display: grid;
+ grid-template-columns: repeat(2, 1fr);
+ gap: 1.5rem;
+ height: calc(100% - 3rem);
+ }
+ 
+ .stat-item {
+ background-color: rgba(255, 255, 255, 0.03);
+ padding: 1rem;
+ border-radius: 12px;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ transition: all 0.3s ease;
+ }
+ 
+ .stat-item:hover {
+ background-color: rgba(255, 255, 255, 0.07);
+ }
+ 
+ .stat-icon {
+ width: 50px;
+ height: 50px;
+ border-radius: 12px;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 1rem;
+ font-size: 1.5rem;
+ background-color: var(--glassmorphism);
+ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ }
+ 
+ .entry-icon {
+ color: var(--accent-blue);
+ }
+ 
+ .streak-icon {
+ color: var(--accent-green);
+ }
+ 
+ .avg-icon {
+ color: var(--accent-orange);
+ }
+ 
+ .best-icon {
+ color: var(--accent-purple);
+ }
+ 
+ .stat-label {
+ color: var(--text-secondary);
+ font-size: 0.9rem;
+ margin-bottom: 0.25rem;
+ }
+ 
+ .stat-value {
+ font-size: 1.5rem;
+ font-weight: 600;
+ }
+ 
+ .mood-meter {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ height: calc(100% - 3rem);
+ }
+ 
+ .mood-circle {
+ width: 140px;
+ height: 140px;
+ border-radius: 50%;
+ background: conic-gradient(var(--accent-blue) 0%, var(--accent-blue) 75%, #334155 75%, #334155 100%);
+ position: relative;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ margin-bottom: 1rem;
+ transform: rotate(-90deg);
+ }
+ 
+ .mood-circle::before {
+ content: '';
+ position: absolute;
+ width: 110px;
+ height: 110px;
+ border-radius: 50%;
+ background-color: var(--bg-card);
+ }
+ 
+ .mood-value {
+ transform: rotate(90deg);
+ font-size: 2rem;
+ font-weight: 600;
+ color: var(--text-primary);
+ position: relative;
+ z-index: 2;
+ }
+ 
+ .mood-details {
+ width: 100%;
+ }
+ 
+ .mood-detail-item {
+ display: flex;
+ justify-content: space-between;
+ margin-bottom: 0.75rem;
+ padding-bottom: 0.75rem;
+ border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+ }
+ 
+ .mood-detail-item:last-child {
+ border-bottom: none;
+ margin-bottom: 0;
+ padding-bottom: 0;
+ }
+ 
+ .mood-detail-label {
+ color: var(--text-secondary);
+ }
+ 
+ .mood-detail-value {
+ font-weight: 500;
+ }
+ 
+ .emotions-container {
+ display: flex;
+ flex-direction: column;
+ height: calc(100% - 3rem);
+ }
+ 
+ .emotion-list {
+ margin-top: 1rem;
+ }
+ 
+ .emotion-item {
+ display: flex;
+ align-items: center;
+ margin-bottom: 0.75rem;
+ }
+ 
+ .emotion-color {
+ width: 12px;
+ height: 12px;
+ border-radius: 3px;
+ margin-right: 0.75rem;
+ }
+ 
+ .emotion-name {
+ flex: 1;
+ }
+ 
+ .emotion-percent {
+ font-weight: 500;
+ }
+ 
+ .blue {
+ background-color: var(--accent-blue);
+ }
+ 
+ .green {
+ background-color: var(--accent-green);
+ }
+ 
+ .orange {
+ background-color: var(--accent-orange);
+ }
+ 
+ .red {
+ background-color: var(--accent-red);
+ }
+ 
+ .purple {
+ background-color: var(--accent-purple);
+ }
+ 
+ .insights-list {
+ height: calc(100% - 3rem);
+ overflow-y: auto;
+ }
+ 
+ .insight-item {
+ display: flex;
+ align-items: flex-start;
+ margin-bottom: 1rem;
+ padding: 0.75rem;
+ border-radius: 8px;
+ background-color: rgba(255, 255, 255, 0.03);
+ transition: all 0.2s ease;
+ }
+ 
+ .insight-item:hover {
+ background-color: rgba(255, 255, 255, 0.07);
+ }
+ 
+ .insight-icon {
+ color: var(--accent-blue);
+ margin-right: 0.75rem;
+ margin-top: 0.25rem;
+ }
+ 
+ .insight-text {
+ font-size: 0.9rem;
+ line-height: 1.5;
+ flex: 1;
+ }
+ 
+ .chart-container {
+ width: 100%;
+ height: calc(100% - 3rem);
+ position: relative;
+ }
+ 
+ /* Animations */
+ @keyframes fadeInUp {
+ from {
+ opacity: 0;
+ transform: translateY(20px);
+ }
+ to {
+ opacity: 1;
+ transform: translateY(0);
+ }
+ }
+ 
+ .animate-fadeInUp {
+ animation: fadeInUp 0.6s ease forwards;
+ }
+ 
+ .delay-1 {
+ animation-delay: 0.1s;
+ opacity: 0;
+ }
+ 
+ .delay-2 {
+ animation-delay: 0.2s;
+ opacity: 0;
+ }
+ 
+ .delay-3 {
+ animation-delay: 0.3s;
+ opacity: 0;
+ }
+ 
+ .delay-4 {
+ animation-delay: 0.4s;
+ opacity: 0;
+ }
+ 
+ .delay-5 {
+ animation-delay: 0.5s;
+ opacity: 0;
+ }
+ </style>
+</head>
+<body>
+ <div class="container">
+ <header>
+ <div class="logo">
+ <div class="logo-icon">
+ <i class="fas fa-brain"></i>
+ </div>
+ <h1 class="logo-text">MindfulAI Journal</h1>
+ </div>
+ </header>
+ 
+ <div class="dashboard-title">
+ <h1>Your Mindfulness Dashboard</h1>
+ <p>February 28, 2025 • <i class="fas fa-moon"></i> Evening</p>
+ </div>
+ 
+ <div class="dashboard-grid">
+ <!-- Mood Chart -->
+ <div class="card mood-chart animate-fadeInUp delay-1">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-chart-line"></i>
+ </div>
+ Mood Timeline
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="chart-container">
+ <canvas id="moodChart"></canvas>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Stats Card -->
+ <div class="card stats-card animate-fadeInUp delay-2">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-chart-pie"></i>
+ </div>
+ Journal Stats
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="stat-grid">
+ <div class="stat-item">
+ <div class="stat-icon entry-icon">
+ <i class="fas fa-pen-to-square"></i>
+ </div>
+ <div class="stat-label">Entries This Month</div>
+ <div class="stat-value" id="entryCount">28</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon streak-icon">
+ <i class="fas fa-fire"></i>
+ </div>
+ <div class="stat-label">Current Streak</div>
+ <div class="stat-value" id="streakCount">12 days</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon avg-icon">
+ <i class="fas fa-chart-simple"></i>
+ </div>
+ <div class="stat-label">Average Mood</div>
+ <div class="stat-value" id="avgMood">6.8</div>
+ </div>
+ <div class="stat-item">
+ <div class="stat-icon best-icon">
+ <i class="fas fa-star"></i>
+ </div>
+ <div class="stat-label">Best Day</div>
+ <div class="stat-value" id="bestDay">Tuesday</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Today's Mood -->
+ <div class="card today-mood animate-fadeInUp delay-3">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-face-smile"></i>
+ </div>
+ Today's Mood
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="mood-meter">
+ <div class="mood-circle">
+ <div class="mood-value">7.5</div>
+ </div>
+ <div class="mood-details">
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Primary Emotion</div>
+ <div class="mood-detail-value" style="color: var(--accent-blue)">Content</div>
+ </div>
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Tone</div>
+ <div class="mood-detail-value" style="color: var(--accent-green)">Positive</div>
+ </div>
+ <div class="mood-detail-item">
+ <div class="mood-detail-label">Energy Level</div>
+ <div class="mood-detail-value" style="color: var(--accent-orange)">Moderate</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Emotion Breakdown -->
+ <div class="card emotion-breakdown animate-fadeInUp delay-4">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-heart-pulse"></i>
+ </div>
+ Emotion Breakdown
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="emotions-container">
+ <div class="chart-container" style="height: 150px">
+ <canvas id="emotionsChart"></canvas>
+ </div>
+ <div class="emotion-list">
+ <div class="emotion-item">
+ <div class="emotion-color blue"></div>
+ <div class="emotion-name">Content</div>
+ <div class="emotion-percent">40%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color green"></div>
+ <div class="emotion-name">Joy</div>
+ <div class="emotion-percent">25%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color orange"></div>
+ <div class="emotion-name">Calm</div>
+ <div class="emotion-percent">15%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color red"></div>
+ <div class="emotion-name">Stress</div>
+ <div class="emotion-percent">10%</div>
+ </div>
+ <div class="emotion-item">
+ <div class="emotion-color purple"></div>
+ <div class="emotion-name">Other</div>
+ <div class="emotion-percent">10%</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <!-- Insights Card -->
+ <div class="card insights-card animate-fadeInUp delay-5">
+ <div class="card-header">
+ <div class="card-title">
+ <div class="card-icon">
+ <i class="fas fa-lightbulb"></i>
+ </div>
+ Your Insights
+ </div>
+ <div class="card-options">
+ <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
+ </div>
+ </div>
+ <div class="card-content">
+ <div class="insights-list">
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-arrow-trend-up"></i>
+ </div>
+ <div class="insight-text">Your mood tends to improve after journaling sessions, especially in the evening.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-calendar"></i>
+ </div>
+ <div class="insight-text">Weekends show the most positive entries, with Saturday being your happiest day.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-arrow-trend-down"></i>
+ </div>
+ <div class="insight-text">Stress levels consistently decrease in the evening after reflection.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-heart"></i>
+ </div>
+ <div class="insight-text">Gratitude for friends and family appears in 68% of your positive entries.</div>
+ </div>
+ <div class="insight-item">
+ <div class="insight-icon">
+ <i class="fas fa-star"></i>
+ </div>
+ <div class="insight-text">Try morning journaling to potentially boost your daily productivity and mood.</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ 
+ <script>
+ // Counter animations
+ const countElement = document.getElementById('entryCount');
+ const startCount = 0;
+ const endCount = 28;
+ const duration = 2000;
+ 
+ let startTime;
+ function animateCount(timestamp) {
+ if (!startTime) startTime = timestamp;
+ const progress = timestamp - startTime;
+ const percentage = Math.min(progress / duration, 1);
+ 
+ const currentCount = Math.floor(percentage * (endCount - startCount) + startCount);
+ countElement.textContent = currentCount;
+ 
+ if (percentage < 1) {
+ requestAnimationFrame(animateCount);
+ }
+ }
+ 
+ requestAnimationFrame(animateCount);
+ 
+ // Initialize Mood Chart
+ const moodCtx = document.getElementById('moodChart').getContext('2d');
+ const moodChart = new Chart(moodCtx, {
+ type: 'line',
+ data: {
+ labels: ['Feb 20', 'Feb 21', 'Feb 22', 'Feb 23', 'Feb 24', 'Feb 25', 'Feb 26', 'Feb 27', 'Feb 28'],
+ datasets: [{
+ label: 'Mood Level',
+ data: [6.2, 7.1, 6.5, 8.0, 7.3, 8.5, 7.8, 8.3, 7.5],
+ fill: true,
+ backgroundColor: 'rgba(59, 130, 246, 0.1)',
+ borderColor: 'rgba(59, 130, 246, 0.8)',
+ borderWidth: 3,
+ tension: 0.4,
+ pointBackgroundColor: '#3b82f6',
+ pointBorderColor: '#fff',
+ pointRadius: 5,
+ pointHoverRadius: 8
+ }]
+ },
+ options: {
+ responsive: true,
+ maintainAspectRatio: false,
+ animation: {
+ duration: 2000,
+ easing: 'easeOutQuart'
+ },
+ scales: {
+ y: {
+ min: 0,
+ max: 10,
+ grid: {
+ color: 'rgba(255, 255, 255, 0.05)',
+ },
+ ticks: {
+ color: 'rgba(255, 255, 255, 0.6)',
+ font: {
+ family: "'Poppins', sans-serif"
+ }
+ }
+ },
+ x: {
+ grid: {
+ display: false
+ },
+ ticks: {
+ color: 'rgba(255, 255, 255, 0.6)',
+ font: {
+ family: "'Poppins', sans-serif"
+ }
+ }
+ }
+ },
+ plugins: {
+ legend: {
+ display: false
+ },
+ tooltip: {
+ backgroundColor: 'rgba(30, 41, 59, 0.9)',
+ titleFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ bodyFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ padding: 12,
+ caretSize: 6,
+ displayColors: false,
+ callbacks: {
+ label: function(context) {
+ return `Mood: ${context.raw}/10`;
+ }
+ }
+ }
+ }
+ }
+ });
+ 
+ // Initialize Emotions Chart
+ const emotionsCtx = document.getElementById('emotionsChart').getContext('2d');
+ const emotionsChart = new Chart(emotionsCtx, {
+ type: 'doughnut',
+ data: {
+ labels: ['Content', 'Joy', 'Calm', 'Stress', 'Other'],
+ datasets: [{
+ data: [40, 25, 15, 10, 10],
+ backgroundColor: [
+ '#3b82f6',
+ '#10b981',
+ '#f59e0b',
+ '#ef4444',
+ '#8b5cf6'
+ ],
+ borderWidth: 0,
+ borderRadius: 4,
+ }]
+ },
+ options: {
+ responsive: true,
+ maintainAspectRatio: false,
+ cutout: '70%',
+ animation: {
+ animateRotate: true,
+ animateScale: true,
+ duration: 2000,
+ easing: 'easeOutQuart'
+ },
+ plugins: {
+ legend: {
+ display: false
+ },
+ tooltip: {
+ backgroundColor: 'rgba(30, 41, 59, 0.9)',
+ titleFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ bodyFont: {
+ family: "'Poppins', sans-serif",
+ size: 14
+ },
+ padding: 12,
+ caretSize: 6,
+ displayColors: true,
+ callbacks: {
+ label: function(context) {
+ return `${context.label}: ${context.raw}%`;
+ }
+ }
+ }
+ }
+ }
+ });
+ 
+ // Animate stats
+ setTimeout(() => {
+ anime({
+ targets: '#avgMood',
+ innerHTML: [0, 6.8],
+ round: 10,
+ easing: 'easeInOutExpo',
+ duration: 2000
+ });
+ 
+ anime({
+ targets: '#streakCount',
+ innerHTML: [0, 12],
+ round: 1,
+ easing: 'easeInOutExpo',
+ duration: 2000,
+ complete: function(anim) {
+ document.getElementById('streakCount').innerHTML = '12 days';
+ }
+ });
+ }, 500);
+ 
+ // Hover effects for cards
+ document.querySelectorAll('.card').forEach(card => {
+ card.addEventListener('mouseenter', () => {
+ anime({
+ targets: card,
+ scale: 1.02,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ card.addEventListener('mouseleave', () => {
+ anime({
+ targets: card,
+ scale: 1,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ 
+ // Hover effects for stats
+ document.querySelectorAll('.stat-item').forEach(item => {
+ item.addEventListener('mouseenter', () => {
+ const icon = item.querySelector('.stat-icon');
+ anime({
+ targets: icon,
+ scale: 1.2,
+ rotate: '5deg',
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ item.addEventListener('mouseleave', () => {
+ const icon = item.querySelector('.stat-icon');
+ anime({
+ targets: icon,
+ scale: 1,
+ rotate: '0deg',
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ 
+ // Hover effects for insights
+ document.querySelectorAll('.insight-item').forEach(item => {
+ item.addEventListener('mouseenter', () => {
+ anime({
+ targets: item,
+ backgroundColor: 'rgba(255, 255, 255, 0.08)',
+ translateX: 5,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ 
+ item.addEventListener('mouseleave', () => {
+ anime({
+ targets: item,
+ backgroundColor: 'rgba(255, 255, 255, 0.03)',
+ translateX: 0,
+ duration: 300,
+ easing: 'easeOutQuad'
+ });
+ });
+ });
+ </script>
+</body>
+</html>
