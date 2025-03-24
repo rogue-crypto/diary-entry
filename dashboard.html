@@ -921,927 +921,797 @@
  });
  </script>
 </body>
-</html><!DOCTYPE html>
+</html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>MindfulAI Journal Dashboard</title>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
- <style>
- @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
- 
- :root {
- --bg-primary: #0f172a;
- --bg-secondary: #1e293b;
- --bg-card: #1e293b;
- --bg-card-hover: #334155;
- --text-primary: #f8fafc;
- --text-secondary: #94a3b8;
- --accent-blue: #3b82f6;
- --accent-green: #10b981;
- --accent-purple: #8b5cf6;
- --accent-orange: #f59e0b;
- --accent-red: #ef4444;
- --glassmorphism: rgba(255, 255, 255, 0.05);
- }
- 
- * {
- margin: 0;
- padding: 0;
- box-sizing: border-box;
- font-family: 'Poppins', sans-serif;
- }
- 
- body {
- background-color: var(--bg-primary);
- color: var(--text-primary);
- overflow-x: hidden;
- }
- 
- .container {
- max-width: 1400px;
- margin: 0 auto;
- padding: 2rem;
- }
- 
- header {
- display: flex;
- align-items: center;
- padding: 1.5rem 0;
- margin-bottom: 2rem;
- border-bottom: 1px solid rgba(255, 255, 255, 0.1);
- }
- 
- .logo {
- display: flex;
- align-items: center;
- gap: 1rem;
- }
- 
- .logo-icon {
- width: 40px;
- height: 40px;
- background-color: var(--accent-blue);
- border-radius: 10px;
- display: flex;
- align-items: center;
- justify-content: center;
- font-size: 1.5rem;
- box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
- }
- 
- .logo-text {
- font-weight: 600;
- font-size: 1.5rem;
- background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
- -webkit-background-clip: text;
- -webkit-text-fill-color: transparent;
- animation: shimmer 2s infinite;
- }
- 
- @keyframes shimmer {
- 0% { background-position: -200% center; }
- 100% { background-position: 200% center; }
- }
- 
- .dashboard-title {
- margin-bottom: 1rem;
- }
- 
- .dashboard-title h1 {
- font-size: 1.8rem;
- font-weight: 600;
- margin-bottom: 0.5rem;
- }
- 
- .dashboard-title p {
- color: var(--text-secondary);
- font-size: 1rem;
- }
- 
- .dashboard-grid {
- display: grid;
- grid-template-columns: repeat(12, 1fr);
- gap: 1.5rem;
- }
- 
- .card {
- background-color: var(--bg-card);
- border-radius: 16px;
- padding: 1.5rem;
- box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
- transition: all 0.3s ease;
- border: 1px solid rgba(255, 255, 255, 0.05);
- position: relative;
- overflow: hidden;
- }
- 
- .card:hover {
- transform: translateY(-5px);
- box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
- border-color: rgba(59, 130, 246, 0.3);
- }
- 
- .card::before {
- content: '';
- position: absolute;
- top: 0;
- left: 0;
- width: 100%;
- height: 4px;
- background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
- opacity: 0;
- transition: all 0.3s ease;
- }
- 
- .card:hover::before {
- opacity: 1;
- }
- 
- .card-header {
- display: flex;
- justify-content: space-between;
- align-items: center;
- margin-bottom: 1.5rem;
- }
- 
- .card-title {
- font-size: 1.1rem;
- font-weight: 600;
- color: var(--text-primary);
- display: flex;
- align-items: center;
- gap: 0.5rem;
- }
- 
- .card-icon {
- width: 30px;
- height: 30px;
- background-color: var(--glassmorphism);
- border-radius: 8px;
- display: flex;
- align-items: center;
- justify-content: center;
- color: var(--accent-blue);
- }
- 
- .card-content {
- height: 100%;
- }
- 
- .mood-chart {
- grid-column: span 7;
- height: 300px;
- }
- 
- .stats-card {
- grid-column: span 5;
- height: 300px;
- }
- 
- .today-mood {
- grid-column: span 4;
- height: 300px;
- }
- 
- .emotion-breakdown {
- grid-column: span 4;
- height: 300px;
- }
- 
- .insights-card {
- grid-column: span 4;
- height: 300px;
- }
- 
- .stat-grid {
- display: grid;
- grid-template-columns: repeat(2, 1fr);
- gap: 1.5rem;
- height: calc(100% - 3rem);
- }
- 
- .stat-item {
- background-color: rgba(255, 255, 255, 0.03);
- padding: 1rem;
- border-radius: 12px;
- display: flex;
- flex-direction: column;
- justify-content: center;
- transition: all 0.3s ease;
- }
- 
- .stat-item:hover {
- background-color: rgba(255, 255, 255, 0.07);
- }
- 
- .stat-icon {
- width: 50px;
- height: 50px;
- border-radius: 12px;
- display: flex;
- align-items: center;
- justify-content: center;
- margin-bottom: 1rem;
- font-size: 1.5rem;
- background-color: var(--glassmorphism);
- box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
- }
- 
- .entry-icon {
- color: var(--accent-blue);
- }
- 
- .streak-icon {
- color: var(--accent-green);
- }
- 
- .avg-icon {
- color: var(--accent-orange);
- }
- 
- .best-icon {
- color: var(--accent-purple);
- }
- 
- .stat-label {
- color: var(--text-secondary);
- font-size: 0.9rem;
- margin-bottom: 0.25rem;
- }
- 
- .stat-value {
- font-size: 1.5rem;
- font-weight: 600;
- }
- 
- .mood-meter {
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- height: calc(100% - 3rem);
- }
- 
- .mood-circle {
- width: 140px;
- height: 140px;
- border-radius: 50%;
- background: conic-gradient(var(--accent-blue) 0%, var(--accent-blue) 75%, #334155 75%, #334155 100%);
- position: relative;
- display: flex;
- align-items: center;
- justify-content: center;
- margin-bottom: 1rem;
- transform: rotate(-90deg);
- }
- 
- .mood-circle::before {
- content: '';
- position: absolute;
- width: 110px;
- height: 110px;
- border-radius: 50%;
- background-color: var(--bg-card);
- }
- 
- .mood-value {
- transform: rotate(90deg);
- font-size: 2rem;
- font-weight: 600;
- color: var(--text-primary);
- position: relative;
- z-index: 2;
- }
- 
- .mood-details {
- width: 100%;
- }
- 
- .mood-detail-item {
- display: flex;
- justify-content: space-between;
- margin-bottom: 0.75rem;
- padding-bottom: 0.75rem;
- border-bottom: 1px solid rgba(255, 255, 255, 0.05);
- }
- 
- .mood-detail-item:last-child {
- border-bottom: none;
- margin-bottom: 0;
- padding-bottom: 0;
- }
- 
- .mood-detail-label {
- color: var(--text-secondary);
- }
- 
- .mood-detail-value {
- font-weight: 500;
- }
- 
- .emotions-container {
- display: flex;
- flex-direction: column;
- height: calc(100% - 3rem);
- }
- 
- .emotion-list {
- margin-top: 1rem;
- }
- 
- .emotion-item {
- display: flex;
- align-items: center;
- margin-bottom: 0.75rem;
- }
- 
- .emotion-color {
- width: 12px;
- height: 12px;
- border-radius: 3px;
- margin-right: 0.75rem;
- }
- 
- .emotion-name {
- flex: 1;
- }
- 
- .emotion-percent {
- font-weight: 500;
- }
- 
- .blue {
- background-color: var(--accent-blue);
- }
- 
- .green {
- background-color: var(--accent-green);
- }
- 
- .orange {
- background-color: var(--accent-orange);
- }
- 
- .red {
- background-color: var(--accent-red);
- }
- 
- .purple {
- background-color: var(--accent-purple);
- }
- 
- .insights-list {
- height: calc(100% - 3rem);
- overflow-y: auto;
- }
- 
- .insight-item {
- display: flex;
- align-items: flex-start;
- margin-bottom: 1rem;
- padding: 0.75rem;
- border-radius: 8px;
- background-color: rgba(255, 255, 255, 0.03);
- transition: all 0.2s ease;
- }
- 
- .insight-item:hover {
- background-color: rgba(255, 255, 255, 0.07);
- }
- 
- .insight-icon {
- color: var(--accent-blue);
- margin-right: 0.75rem;
- margin-top: 0.25rem;
- }
- 
- .insight-text {
- font-size: 0.9rem;
- line-height: 1.5;
- flex: 1;
- }
- 
- .chart-container {
- width: 100%;
- height: calc(100% - 3rem);
- position: relative;
- }
- 
- /* Animations */
- @keyframes fadeInUp {
- from {
- opacity: 0;
- transform: translateY(20px);
- }
- to {
- opacity: 1;
- transform: translateY(0);
- }
- }
- 
- .animate-fadeInUp {
- animation: fadeInUp 0.6s ease forwards;
- }
- 
- .delay-1 {
- animation-delay: 0.1s;
- opacity: 0;
- }
- 
- .delay-2 {
- animation-delay: 0.2s;
- opacity: 0;
- }
- 
- .delay-3 {
- animation-delay: 0.3s;
- opacity: 0;
- }
- 
- .delay-4 {
- animation-delay: 0.4s;
- opacity: 0;
- }
- 
- .delay-5 {
- animation-delay: 0.5s;
- opacity: 0;
- }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindful AI | Past Entries</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            display: inline-block;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 50%;
+            background: #60a5fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: "";
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60%;
+            height: 60%;
+            background: #0f172a;
+            border-radius: 50%;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #60a5fa;
+        }
+
+        .nav-link.active {
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #60a5fa;
+            color: #60a5fa;
+        }
+
+        .btn-outline:hover {
+            background: rgba(96, 165, 250, 0.1);
+        }
+
+        .btn-primary {
+            background: #60a5fa;
+            border: 1px solid #60a5fa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3b82f6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .filter-dropdown {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            color: #e2e8f0;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-dropdown:focus {
+            border-color: #60a5fa;
+        }
+
+        .entries-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .entry-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .entry-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .entry-header {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry-date {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+
+        .entry-mood {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mood-icon {
+            font-size: 1.5rem;
+        }
+
+        .mood-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .entry-content {
+            padding: 1.5rem;
+        }
+
+        .entry-text {
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+        }
+
+        .entry-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .entry-tag {
+            background: rgba(96, 165, 250, 0.2);
+            color: #60a5fa;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .entry-tag.warning {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .entry-tag.issue {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .entry-tag.insight {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .entry-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .health-meter {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .health-label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            min-width: 90px;
+        }
+
+        .health-bar {
+            height: 8px;
+            background: rgba(148, 163, 184, 0.2);
+            border-radius: 4px;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .health-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .health-score {
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .entry-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .entry-action-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .entry-action-btn:hover {
+            color: #60a5fa;
+        }
+
+        .entry-action-icon {
+            font-size: 1.2rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 2.5rem;
+            gap: 0.5rem;
+        }
+
+        .page-btn {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            color: #e2e8f0;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            background: rgba(96, 165, 250, 0.2);
+            border-color: #60a5fa;
+        }
+
+        .page-btn.active {
+            background: #60a5fa;
+            color: white;
+            border-color: #60a5fa;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .entry-footer {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .health-meter {
+                width: 100%;
+            }
+
+            .entry-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: rgba(30, 41, 59, 0.4);
+            border-radius: 16px;
+            border: 1px dashed rgba(148, 163, 184, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #60a5fa;
+            margin-bottom: 1rem;
+        }
+
+        .empty-message {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .severity-indicator {
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .severity-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .severity-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .severity-low {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+        }
+
+        .insights-button {
+            margin-left: auto;
+            background: rgba(96, 165, 250, 0.1);
+            color: #60a5fa;
+            border: 1px solid #60a5fa;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .insights-button:hover {
+            background: rgba(96, 165, 250, 0.2);
+        }
+    </style>
 </head>
 <body>
- <div class="container">
- <header>
- <div class="logo">
- <div class="logo-icon">
- <i class="fas fa-brain"></i>
- </div>
- <h1 class="logo-text">MindfulAI Journal</h1>
- </div>
- </header>
- 
- <div class="dashboard-title">
- <h1>Your Mindfulness Dashboard</h1>
- <p>February 28, 2025 • <i class="fas fa-moon"></i> Evening</p>
- </div>
- 
- <div class="dashboard-grid">
- <!-- Mood Chart -->
- <div class="card mood-chart animate-fadeInUp delay-1">
- <div class="card-header">
- <div class="card-title">
- <div class="card-icon">
- <i class="fas fa-chart-line"></i>
- </div>
- Mood Timeline
- </div>
- <div class="card-options">
- <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
- </div>
- </div>
- <div class="card-content">
- <div class="chart-container">
- <canvas id="moodChart"></canvas>
- </div>
- </div>
- </div>
- 
- <!-- Stats Card -->
- <div class="card stats-card animate-fadeInUp delay-2">
- <div class="card-header">
- <div class="card-title">
- <div class="card-icon">
- <i class="fas fa-chart-pie"></i>
- </div>
- Journal Stats
- </div>
- <div class="card-options">
- <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
- </div>
- </div>
- <div class="card-content">
- <div class="stat-grid">
- <div class="stat-item">
- <div class="stat-icon entry-icon">
- <i class="fas fa-pen-to-square"></i>
- </div>
- <div class="stat-label">Entries This Month</div>
- <div class="stat-value" id="entryCount">28</div>
- </div>
- <div class="stat-item">
- <div class="stat-icon streak-icon">
- <i class="fas fa-fire"></i>
- </div>
- <div class="stat-label">Current Streak</div>
- <div class="stat-value" id="streakCount">12 days</div>
- </div>
- <div class="stat-item">
- <div class="stat-icon avg-icon">
- <i class="fas fa-chart-simple"></i>
- </div>
- <div class="stat-label">Average Mood</div>
- <div class="stat-value" id="avgMood">6.8</div>
- </div>
- <div class="stat-item">
- <div class="stat-icon best-icon">
- <i class="fas fa-star"></i>
- </div>
- <div class="stat-label">Best Day</div>
- <div class="stat-value" id="bestDay">Tuesday</div>
- </div>
- </div>
- </div>
- </div>
- 
- <!-- Today's Mood -->
- <div class="card today-mood animate-fadeInUp delay-3">
- <div class="card-header">
- <div class="card-title">
- <div class="card-icon">
- <i class="fas fa-face-smile"></i>
- </div>
- Today's Mood
- </div>
- <div class="card-options">
- <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
- </div>
- </div>
- <div class="card-content">
- <div class="mood-meter">
- <div class="mood-circle">
- <div class="mood-value">7.5</div>
- </div>
- <div class="mood-details">
- <div class="mood-detail-item">
- <div class="mood-detail-label">Primary Emotion</div>
- <div class="mood-detail-value" style="color: var(--accent-blue)">Content</div>
- </div>
- <div class="mood-detail-item">
- <div class="mood-detail-label">Tone</div>
- <div class="mood-detail-value" style="color: var(--accent-green)">Positive</div>
- </div>
- <div class="mood-detail-item">
- <div class="mood-detail-label">Energy Level</div>
- <div class="mood-detail-value" style="color: var(--accent-orange)">Moderate</div>
- </div>
- </div>
- </div>
- </div>
- </div>
- 
- <!-- Emotion Breakdown -->
- <div class="card emotion-breakdown animate-fadeInUp delay-4">
- <div class="card-header">
- <div class="card-title">
- <div class="card-icon">
- <i class="fas fa-heart-pulse"></i>
- </div>
- Emotion Breakdown
- </div>
- <div class="card-options">
- <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
- </div>
- </div>
- <div class="card-content">
- <div class="emotions-container">
- <div class="chart-container" style="height: 150px">
- <canvas id="emotionsChart"></canvas>
- </div>
- <div class="emotion-list">
- <div class="emotion-item">
- <div class="emotion-color blue"></div>
- <div class="emotion-name">Content</div>
- <div class="emotion-percent">40%</div>
- </div>
- <div class="emotion-item">
- <div class="emotion-color green"></div>
- <div class="emotion-name">Joy</div>
- <div class="emotion-percent">25%</div>
- </div>
- <div class="emotion-item">
- <div class="emotion-color orange"></div>
- <div class="emotion-name">Calm</div>
- <div class="emotion-percent">15%</div>
- </div>
- <div class="emotion-item">
- <div class="emotion-color red"></div>
- <div class="emotion-name">Stress</div>
- <div class="emotion-percent">10%</div>
- </div>
- <div class="emotion-item">
- <div class="emotion-color purple"></div>
- <div class="emotion-name">Other</div>
- <div class="emotion-percent">10%</div>
- </div>
- </div>
- </div>
- </div>
- </div>
- 
- <!-- Insights Card -->
- <div class="card insights-card animate-fadeInUp delay-5">
- <div class="card-header">
- <div class="card-title">
- <div class="card-icon">
- <i class="fas fa-lightbulb"></i>
- </div>
- Your Insights
- </div>
- <div class="card-options">
- <i class="fas fa-ellipsis-vertical" style="color: var(--text-secondary); cursor: pointer;"></i>
- </div>
- </div>
- <div class="card-content">
- <div class="insights-list">
- <div class="insight-item">
- <div class="insight-icon">
- <i class="fas fa-arrow-trend-up"></i>
- </div>
- <div class="insight-text">Your mood tends to improve after journaling sessions, especially in the evening.</div>
- </div>
- <div class="insight-item">
- <div class="insight-icon">
- <i class="fas fa-calendar"></i>
- </div>
- <div class="insight-text">Weekends show the most positive entries, with Saturday being your happiest day.</div>
- </div>
- <div class="insight-item">
- <div class="insight-icon">
- <i class="fas fa-arrow-trend-down"></i>
- </div>
- <div class="insight-text">Stress levels consistently decrease in the evening after reflection.</div>
- </div>
- <div class="insight-item">
- <div class="insight-icon">
- <i class="fas fa-heart"></i>
- </div>
- <div class="insight-text">Gratitude for friends and family appears in 68% of your positive entries.</div>
- </div>
- <div class="insight-item">
- <div class="insight-icon">
- <i class="fas fa-star"></i>
- </div>
- <div class="insight-text">Try morning journaling to potentially boost your daily productivity and mood.</div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- 
- <script>
- // Counter animations
- const countElement = document.getElementById('entryCount');
- const startCount = 0;
- const endCount = 28;
- const duration = 2000;
- 
- let startTime;
- function animateCount(timestamp) {
- if (!startTime) startTime = timestamp;
- const progress = timestamp - startTime;
- const percentage = Math.min(progress / duration, 1);
- 
- const currentCount = Math.floor(percentage * (endCount - startCount) + startCount);
- countElement.textContent = currentCount;
- 
- if (percentage < 1) {
- requestAnimationFrame(animateCount);
- }
- }
- 
- requestAnimationFrame(animateCount);
- 
- // Initialize Mood Chart
- const moodCtx = document.getElementById('moodChart').getContext('2d');
- const moodChart = new Chart(moodCtx, {
- type: 'line',
- data: {
- labels: ['Feb 20', 'Feb 21', 'Feb 22', 'Feb 23', 'Feb 24', 'Feb 25', 'Feb 26', 'Feb 27', 'Feb 28'],
- datasets: [{
- label: 'Mood Level',
- data: [6.2, 7.1, 6.5, 8.0, 7.3, 8.5, 7.8, 8.3, 7.5],
- fill: true,
- backgroundColor: 'rgba(59, 130, 246, 0.1)',
- borderColor: 'rgba(59, 130, 246, 0.8)',
- borderWidth: 3,
- tension: 0.4,
- pointBackgroundColor: '#3b82f6',
- pointBorderColor: '#fff',
- pointRadius: 5,
- pointHoverRadius: 8
- }]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- animation: {
- duration: 2000,
- easing: 'easeOutQuart'
- },
- scales: {
- y: {
- min: 0,
- max: 10,
- grid: {
- color: 'rgba(255, 255, 255, 0.05)',
- },
- ticks: {
- color: 'rgba(255, 255, 255, 0.6)',
- font: {
- family: "'Poppins', sans-serif"
- }
- }
- },
- x: {
- grid: {
- display: false
- },
- ticks: {
- color: 'rgba(255, 255, 255, 0.6)',
- font: {
- family: "'Poppins', sans-serif"
- }
- }
- }
- },
- plugins: {
- legend: {
- display: false
- },
- tooltip: {
- backgroundColor: 'rgba(30, 41, 59, 0.9)',
- titleFont: {
- family: "'Poppins', sans-serif",
- size: 14
- },
- bodyFont: {
- family: "'Poppins', sans-serif",
- size: 14
- },
- padding: 12,
- caretSize: 6,
- displayColors: false,
- callbacks: {
- label: function(context) {
- return `Mood: ${context.raw}/10`;
- }
- }
- }
- }
- }
- });
- 
- // Initialize Emotions Chart
- const emotionsCtx = document.getElementById('emotionsChart').getContext('2d');
- const emotionsChart = new Chart(emotionsCtx, {
- type: 'doughnut',
- data: {
- labels: ['Content', 'Joy', 'Calm', 'Stress', 'Other'],
- datasets: [{
- data: [40, 25, 15, 10, 10],
- backgroundColor: [
- '#3b82f6',
- '#10b981',
- '#f59e0b',
- '#ef4444',
- '#8b5cf6'
- ],
- borderWidth: 0,
- borderRadius: 4,
- }]
- },
- options: {
- responsive: true,
- maintainAspectRatio: false,
- cutout: '70%',
- animation: {
- animateRotate: true,
- animateScale: true,
- duration: 2000,
- easing: 'easeOutQuart'
- },
- plugins: {
- legend: {
- display: false
- },
- tooltip: {
- backgroundColor: 'rgba(30, 41, 59, 0.9)',
- titleFont: {
- family: "'Poppins', sans-serif",
- size: 14
- },
- bodyFont: {
- family: "'Poppins', sans-serif",
- size: 14
- },
- padding: 12,
- caretSize: 6,
- displayColors: true,
- callbacks: {
- label: function(context) {
- return `${context.label}: ${context.raw}%`;
- }
- }
- }
- }
- }
- });
- 
- // Animate stats
- setTimeout(() => {
- anime({
- targets: '#avgMood',
- innerHTML: [0, 6.8],
- round: 10,
- easing: 'easeInOutExpo',
- duration: 2000
- });
- 
- anime({
- targets: '#streakCount',
- innerHTML: [0, 12],
- round: 1,
- easing: 'easeInOutExpo',
- duration: 2000,
- complete: function(anim) {
- document.getElementById('streakCount').innerHTML = '12 days';
- }
- });
- }, 500);
- 
- // Hover effects for cards
- document.querySelectorAll('.card').forEach(card => {
- card.addEventListener('mouseenter', () => {
- anime({
- targets: card,
- scale: 1.02,
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- 
- card.addEventListener('mouseleave', () => {
- anime({
- targets: card,
- scale: 1,
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- });
- 
- // Hover effects for stats
- document.querySelectorAll('.stat-item').forEach(item => {
- item.addEventListener('mouseenter', () => {
- const icon = item.querySelector('.stat-icon');
- anime({
- targets: icon,
- scale: 1.2,
- rotate: '5deg',
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- 
- item.addEventListener('mouseleave', () => {
- const icon = item.querySelector('.stat-icon');
- anime({
- targets: icon,
- scale: 1,
- rotate: '0deg',
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- });
- 
- // Hover effects for insights
- document.querySelectorAll('.insight-item').forEach(item => {
- item.addEventListener('mouseenter', () => {
- anime({
- targets: item,
- backgroundColor: 'rgba(255, 255, 255, 0.08)',
- translateX: 5,
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- 
- item.addEventListener('mouseleave', () => {
- anime({
- targets: item,
- backgroundColor: 'rgba(255, 255, 255, 0.03)',
- translateX: 0,
- duration: 300,
- easing: 'easeOutQuad'
- });
- });
- });
- </script>
+    <canvas id="background-animation"></canvas>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="logo-icon"></span>
+            Mindful AI
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="new-entry.html" class="nav-link">New Entry</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="past-entries.html" class="nav-link active">Past Entries</a>
+        </div>
+        <div class="auth-buttons">
+            <button class="btn btn-outline">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="title">Past Journal Entries</h1>
+            <select class="filter-dropdown">
+                <option value="all">All Entries</option>
+                <option value="high">High Severity</option>
+                <option value="medium">Medium Severity</option>
+                <option value="low">Low Severity</option>
+                <option value="alcohol">Alcohol-related</option>
+                <option value="habits">Bad Habits</option>
+            </select>
+        </div>
+
+        <div class="entries-grid">
+            <!-- Entry 1 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">March 21, 2025</div>
+                    <div class="entry-mood">
+                        <div class="mood-icon">😔</div>
+                        <div class="mood-label">Depressed</div>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-text">I drank again last night after promising myself I wouldn't. What started as "just one beer" with colleagues after work turned into 8 or 9. I don't even remember getting home. My head is pounding, and I missed a morning meeting. My boss texted asking where I was, and I lied about being sick. I guess I am sick, just not the way I told him. I'm sick of this cycle. I'm sick of waking up with regret. I'm sick of the lies. But I don't know how to stop. Every time I think I have it under control, something triggers me and I'm back to square one.</p>
+                    <div class="entry-tags">
+                        <span class="entry-tag warning">Alcohol Dependency</span>
+                        <span class="entry-tag issue">Work Impact</span>
+                        <span class="entry-tag">Shame</span>
+                        <span class="entry-tag">Lying</span>
+                    </div>
+                </div>
+                <div class="entry-footer">
+                    <div class="health-meter">
+                        <div class="severity-indicator severity-high">High Severity</div>
+                        <div class="health-bar">
+                            <div class="health-fill" style="width: 35%; background: #ef4444;"></div>
+                        </div>
+                        <div class="health-score">35%</div>
+                    </div>
+                    <button class="insights-button">View Insights</button>
+                </div>
+            </div>
+
+            <!-- Entry 2 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">March 17, 2025</div>
+                    <div class="entry-mood">
+                        <div class="mood-icon">😰</div>
+                        <div class="mood-label">Anxious</div>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-text">I've spent almost $300 on online shopping in the last two days. I don't need any of this stuff. It just gives me a momentary high when I click "buy now," but then the guilt sets in. My credit card is almost maxed out, and I'm still paying off last month's impulsive purchases. I'm starting to hide packages from my partner. They don't know how bad it's getting. Every time I feel anxious, I open Amazon or other shopping sites and just browse until I find something to buy. It's like scratching an itch, but the relief is so brief and the consequences are piling up. I know I should talk to someone about this.</p>
+                    <div class="entry-tags">
+                        <span class="entry-tag warning">Compulsive Shopping</span>
+                        <span class="entry-tag issue">Financial Strain</span>
+                        <span class="entry-tag">Hiding Behavior</span>
+                        <span class="entry-tag">Anxiety Relief</span>
+                    </div>
+                </div>
+                <div class="entry-footer">
+                    <div class="health-meter">
+                        <div class="severity-indicator severity-medium">Medium Severity</div>
+                        <div class="health-bar">
+                            <div class="health-fill" style="width: 48%; background: #f59e0b;"></div>
+                        </div>
+                        <div class="health-score">48%</div>
+                    </div>
+                    <button class="insights-button">View Insights</button>
+                </div>
+            </div>
+
+            <!-- Entry 3 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">March 12, 2025</div>
+                    <div class="entry-mood">
+                        <div class="mood-icon">😡</div>
+                        <div class="mood-label">Angry</div>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-text">I got so drunk last night. Sara called me to catch up, and I could tell she was judging me when I mentioned having a few drinks. I snapped at her and said some really awful things. This morning I woke up to several missing calls from her and a long text saying how worried she is. I hate that my drinking is affecting my friendships now too. It used to just be something I did on weekends, but now I'm drinking almost every night. I tell myself it's to relax after work, but I know that's just an excuse. I'm starting to worry that I might have a real problem. My recycling bin is full of bottles and I feel ashamed when I take it out.</p>
+                    <div class="entry-tags">
+                        <span class="entry-tag warning">Alcohol Abuse</span>
+                        <span class="entry-tag issue">Relationship Conflict</span>
+                        <span class="entry-tag">Defensive Behavior</span>
+                        <span class="entry-tag insight">Self-Awareness</span>
+                    </div>
+                </div>
+                <div class="entry-footer">
+                    <div class="health-meter">
+                        <div class="severity-indicator severity-high">High Severity</div>
+                        <div class="health-bar">
+                            <div class="health-fill" style="width: 32%; background: #ef4444;"></div>
+                        </div>
+                        <div class="health-score">32%</div>
+                    </div>
+                    <button class="insights-button">View Insights</button>
+                </div>
+            </div>
+
+            <!-- Entry 4 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">March 8, 2025</div>
+                    <div class="entry-mood">
+                        <div class="mood-icon">😴</div>
+                        <div class="mood-label">Exhausted</div>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-text">I stayed up until 4 AM gaming again. I know I have an important presentation today, but I couldn't stop. Just "one more match" kept turning into another, and another. I've been doing this for weeks now. My sleep schedule is completely destroyed. I'm using energy drinks to stay awake during the day, which just makes me more anxious and jittery. My performance at work is suffering, and my team has noticed. I keep telling myself I'll get it under control, but every night I find myself back in front of the screen, escaping into these games. Real life feels too overwhelming, and gaming is the only place where I feel competent and in control.</p>
+                    <div class="entry-tags">
+                        <span class="entry-tag warning">Gaming Addiction</span>
+                        <span class="entry-tag issue">Sleep Deprivation</span>
+                        <span class="entry-tag">Work Performance</span>
+                        <span class="entry-tag">Escapism</span>
+                    </div>
+                </div>
+                <div class="entry-footer">
+                    <div class="health-meter">
+                        <div class="severity-indicator severity-medium">Medium Severity</div>
+                        <div class="health-bar">
+                            <div class="health-fill" style="width: 54%; background: #f59e0b;"></div>
+                        </div>
+                        <div class="health-score">54%</div>
+                    </div>
+                    <button class="insights-button">View Insights</button>
+                </div>
+            </div>
+
+            <!-- Entry 5 -->
+            <div class="entry-card">
+                <div class="entry-header">
+                    <div class="entry-date">March 5, 2025</div>
+                    <div class="entry-mood">
+                        <div class="mood-icon">😔</div>
+                        <div class="mood-label">Sad</div>
+                    </div>
+                </div>
+                <div class="entry-content">
+                    <p class="entry-text">I thought I could handle just having a couple drinks at dinner, but it turned into stopping at a bar after and closing the place down. I called in sick to work again today – that's the third time this month. I know HR is going to want to have a "talk" soon. The worst part is I drunk texted my ex at 2 AM. Woke up to some embarrassing messages that I don't even remember sending. Why do I keep sabotaging myself like this? Alcohol makes me feel confident and relaxed in the moment, but the next day I'm left with this mess of shame and regret. I need to address this before I lose my job or do something I can't take back.</p>
+                    <div class="entry-tags">
+                        <span class="entry-tag warning">Alcohol Problem</span>
+                        <span class="entry-tag issue">Job Risk</span>
+                        <span class="entry-tag">Impulsive Behavior</span>
+                        <span class="entry-tag insight">Recognition of Pattern</span>
+                    </div>
+                </div>
+                <div class="entry-footer">
+                    <div class="health-meter">
+                        <div class="severity-indicator severity-high">High Severity</div>
+                        <div class="health-bar">
+                            <div class="health-fill" style="width: 38%; background: #ef4444;"></div>
+                        </div>
+                        <div class="health-score">38%</div>
+                    </div>
+                    <button class="insights-button">View Insights</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <button class="page-btn disabled">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                </svg>
+            </button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Background Animation Setup
+        const canvas = document.getElementById('background-animation');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x60a5fa,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 5;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.001;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animation for entry cards
+        document.addEventListener('DOMContentLoaded', () => {
+            gsap.from('.entry-card', {
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.2,
+                ease: 'power3.out'
+            });
+
+            // Add hover effect for entry cards
+            const entryCards = document.querySelectorAll('.entry-card');
+            entryCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    gsap.to(card, {
+                        scale: 1.02,
+                        boxShadow: '0 15px 30px rgba(0, 0, 0, 0.3)',
+                        duration: 0.3
+                    });
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        scale: 1,
+                        boxShadow: '0 0 0 rgba(0, 0, 0,.1)',
+                        duration: 0.3
+                    });
+                });
+            });
+            
+            // Filter functionality
+            const filterDropdown = document.querySelector('.filter-dropdown');
+            filterDropdown.addEventListener('change', (e) => {
+                const filter = e.target.value;
+                console.log(`Filtering by: ${filter}`);
+                // In a real application, this would filter the entries
+                
+                // Animation effect for filter change
+                gsap.from('.entry-card', {
+                    scale: 0.95,
+                    opacity: 0.5,
+                    duration: 0.5,
+                    stagger: 0.1,
+                    ease: 'power2.out'
+                });
+            });
+            
+            // Pagination functionality
+            const pageBtns = document.querySelectorAll('.page-btn:not(.disabled)');
+            pageBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    pageBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // In a real application, this would load the appropriate page of entries
+                    console.log(`Page ${btn.textContent} clicked`);
+                    
+                    // Animation for page change
+                    gsap.to(window, {
+                        scrollTo: { y: 0 },
+                        duration: 0.5
+                    });
+                    
+                    gsap.fromTo('.entry-card', 
+                        { opacity: 0, y: 20 },
+                        { opacity: 1, y: 0, duration: 0.5, stagger: 0.1 }
+                    );
+                });
+            });
+            
+            // View Insights button functionality
+            const insightBtns = document.querySelectorAll('.insights-button');
+            insightBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const card = e.target.closest('.entry-card');
+                    console.log('View insights for entry on', card.querySelector('.entry-date').textContent);
+                    // In a real application, this would navigate to the insights view for this entry
+                });
+            });
+        });
+    </script>
 </body>
 </html>
