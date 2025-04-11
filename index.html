@@ -891,13 +891,11 @@
         });
 
         // Form submissions (placeholder functionality)
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Login functionality would connect to backend here');
-            
-            // Navigate to home after login
-            document.querySelector('[data-page="home"]').click();
-        });
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    alert('You have been registered!');
+    document.querySelector('[data-page="home"]').click();
+});
 
         document.getElementById('signupForm').addEventListener('submit', function(e) {
             e.preventDefault();
